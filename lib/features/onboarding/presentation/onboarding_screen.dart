@@ -52,14 +52,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               if (_isConnected)
                 Column(
                   children: [
-                    const Text('Permission Granted!', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Permission Granted!',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
                         context.go('/dashboard');
                       },
                       child: const Text('Continue to Dashboard'),
-                    )
+                    ),
                   ],
                 )
               else
@@ -73,7 +79,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ElevatedButton(
                 onPressed: _checkStatus,
                 child: const Text('Refresh Status'),
-              )
+              ),
             ],
           ),
         ),

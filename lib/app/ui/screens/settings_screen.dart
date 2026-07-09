@@ -51,9 +51,9 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           GlassmorphismCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,10 +105,14 @@ class SettingsScreen extends ConsumerWidget {
                       final files = await AppLogger.getLogFiles();
                       if (files.isNotEmpty && context.mounted) {
                         final xFiles = files.map((f) => XFile(f.path)).toList();
-                        await SharePlus.instance.share(ShareParams(files: xFiles, text: 'NotTik Debug Logs'));
+                        await SharePlus.instance.share(
+                          ShareParams(files: xFiles, text: 'NotTik Debug Logs'),
+                        );
                       } else if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('هیچ لاگی ثبت نشده است.')),
+                          const SnackBar(
+                            content: Text('هیچ لاگی ثبت نشده است.'),
+                          ),
                         );
                       }
                     } catch (e) {
@@ -119,9 +123,9 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 32),
-          
+
           Center(
             child: Text(
               'NotTik v1.0.0\nمبتنی بر حریم خصوصی و کاملاً آفلاین',

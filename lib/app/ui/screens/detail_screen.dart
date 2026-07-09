@@ -12,7 +12,9 @@ class DetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final revisionsAsync = ref.watch(notificationDetailProvider(record.id ?? 0));
+    final revisionsAsync = ref.watch(
+      notificationDetailProvider(record.id ?? 0),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -29,9 +31,14 @@ class DetailScreen extends ConsumerWidget {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                    child: Icon(Icons.notifications_active, 
-                        color: Theme.of(context).colorScheme.onPrimaryContainer, size: 30),
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.notifications_active,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      size: 30,
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -40,12 +47,15 @@ class DetailScreen extends ConsumerWidget {
                       children: [
                         Text(
                           record.appName ?? record.packageName ?? 'Unknown App',
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         if (record.groupKey != null) ...[
                           const SizedBox(height: 4),
-                          Text('Group: ${record.groupKey}', 
-                            style: Theme.of(context).textTheme.bodySmall),
+                          Text(
+                            'Group: ${record.groupKey}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
                         ],
                       ],
                     ),
@@ -54,9 +64,9 @@ class DetailScreen extends ConsumerWidget {
               ),
             ),
           ),
-          
+
           const Divider(),
-          
+
           // Revisions Timeline
           Expanded(
             child: revisionsAsync.when(
@@ -65,14 +75,19 @@ class DetailScreen extends ConsumerWidget {
                   return const Center(child: Text('هیچ تغییراتی یافت نشد.'));
                 }
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   itemCount: revisions.length,
                   itemBuilder: (context, index) {
                     final rev = revisions[index];
-                    final date = DateTime.fromMillisecondsSinceEpoch(rev.captureTimestamp ?? 0);
+                    final date = DateTime.fromMillisecondsSinceEpoch(
+                      rev.captureTimestamp ?? 0,
+                    );
                     final timeStr = DateFormat.Hms().format(date);
                     final dateStr = DateFormat.yMd().format(date);
-                    
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: GlassmorphismCard(
@@ -83,13 +98,27 @@ class DetailScreen extends ConsumerWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(timeStr, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                Text(dateStr, style: Theme.of(context).textTheme.bodySmall),
+                                Text(
+                                  timeStr,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  dateStr,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
                               ],
                             ),
                             const SizedBox(height: 8),
                             if (rev.title != null && rev.title!.isNotEmpty)
-                              Text(rev.title!, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                              Text(
+                                rev.title!,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
                             if (rev.text != null && rev.text!.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 4.0),
@@ -98,17 +127,23 @@ class DetailScreen extends ConsumerWidget {
                             if (rev.bigText != null && rev.bigText!.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(rev.bigText!, style: const TextStyle(fontStyle: FontStyle.italic)),
+                                child: Text(
+                                  rev.bigText!,
+                                  style: const TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
                               ),
-                            
+
                             // Progress bar if available
                             if (rev.progressMax != null && rev.progressMax! > 0)
                               Padding(
                                 padding: const EdgeInsets.only(top: 12.0),
                                 child: LinearProgressIndicator(
-                                  value: (rev.progressIndeterminate == true) 
-                                      ? null 
-                                      : (rev.progressValue?.toDouble() ?? 0) / (rev.progressMax?.toDouble() ?? 1),
+                                  value: (rev.progressIndeterminate == true)
+                                      ? null
+                                      : (rev.progressValue?.toDouble() ?? 0) /
+                                            (rev.progressMax?.toDouble() ?? 1),
                                 ),
                               ),
                           ],

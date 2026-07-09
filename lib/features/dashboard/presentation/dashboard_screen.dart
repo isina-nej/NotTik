@@ -11,9 +11,7 @@ class DashboardScreen extends ConsumerWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text('Dashboard UI Placeholder'),
-          ],
+          children: const [Text('Dashboard UI Placeholder')],
         ),
       ),
     );

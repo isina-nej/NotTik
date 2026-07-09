@@ -213,20 +213,14 @@ class NativeNotificationRevision {
 }
 
 class PaginatedResult {
-  PaginatedResult({
-    this.items,
-    this.hasMore,
-  });
+  PaginatedResult({this.items, this.hasMore});
 
   List<NativeNotificationRecord?>? items;
 
   bool? hasMore;
 
   Object encode() {
-    return <Object?>[
-      items,
-      hasMore,
-    ];
+    return <Object?>[items, hasMore];
   }
 
   static PaginatedResult decode(Object result) {
@@ -255,12 +249,7 @@ class NativeAppMetadata {
   int? retentionDays;
 
   Object encode() {
-    return <Object?>[
-      packageName,
-      appName,
-      isLoggingEnabled,
-      retentionDays,
-    ];
+    return <Object?>[packageName, appName, isLoggingEnabled, retentionDays];
   }
 
   static NativeAppMetadata decode(Object result) {
@@ -275,11 +264,7 @@ class NativeAppMetadata {
 }
 
 class ListenerDiagnostics {
-  ListenerDiagnostics({
-    this.isRunning,
-    this.hasError,
-    this.errorMessage,
-  });
+  ListenerDiagnostics({this.isRunning, this.hasError, this.errorMessage});
 
   bool? isRunning;
 
@@ -288,11 +273,7 @@ class ListenerDiagnostics {
   String? errorMessage;
 
   Object encode() {
-    return <Object?>[
-      isRunning,
-      hasError,
-      errorMessage,
-    ];
+    return <Object?>[isRunning, hasError, errorMessage];
   }
 
   static ListenerDiagnostics decode(Object result) {
@@ -305,7 +286,6 @@ class ListenerDiagnostics {
   }
 }
 
-
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -313,19 +293,19 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is NativeNotificationRecord) {
+    } else if (value is NativeNotificationRecord) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeNotificationRevision) {
+    } else if (value is NativeNotificationRevision) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    }    else if (value is PaginatedResult) {
+    } else if (value is PaginatedResult) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeAppMetadata) {
+    } else if (value is NativeAppMetadata) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    }    else if (value is ListenerDiagnostics) {
+    } else if (value is ListenerDiagnostics) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else {
@@ -336,15 +316,15 @@ class _PigeonCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 129: 
+      case 129:
         return NativeNotificationRecord.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return NativeNotificationRevision.decode(readValue(buffer)!);
-      case 131: 
+      case 131:
         return PaginatedResult.decode(readValue(buffer)!);
-      case 132: 
+      case 132:
         return NativeAppMetadata.decode(readValue(buffer)!);
-      case 133: 
+      case 133:
         return ListenerDiagnostics.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -356,9 +336,13 @@ class NotificationBridge {
   /// Constructor for [NotificationBridge].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  NotificationBridge({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  NotificationBridge({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -366,12 +350,14 @@ class NotificationBridge {
   final String pigeonVar_messageChannelSuffix;
 
   Future<bool> isListenerConnected() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.isListenerConnected$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.isListenerConnected$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
@@ -394,12 +380,14 @@ class NotificationBridge {
   }
 
   Future<void> openListenerSettings() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.openListenerSettings$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.openListenerSettings$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
@@ -417,12 +405,14 @@ class NotificationBridge {
   }
 
   Future<void> requestRebind() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.requestRebind$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.requestRebind$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
@@ -440,12 +430,14 @@ class NotificationBridge {
   }
 
   Future<ListenerDiagnostics> getListenerDiagnostics() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getListenerDiagnostics$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getListenerDiagnostics$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
@@ -467,14 +459,23 @@ class NotificationBridge {
     }
   }
 
-  Future<PaginatedResult> getLatestHistory(int offset, int limit, String? searchQuery, String? category) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getLatestHistory$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+  Future<PaginatedResult> getLatestHistory(
+    int offset,
+    int limit,
+    String? searchQuery,
+    String? category,
+  ) async {
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getLatestHistory$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[offset, limit, searchQuery, category],
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[offset, limit, searchQuery, category]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -496,13 +497,17 @@ class NotificationBridge {
   }
 
   Future<NativeNotificationRecord?> getRecordDetails(int id) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getRecordDetails$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getRecordDetails$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[id],
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -519,13 +524,17 @@ class NotificationBridge {
   }
 
   Future<List<NativeNotificationRevision?>> getRevisions(int recordId) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getRevisions$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getRevisions$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[recordId],
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[recordId]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -542,17 +551,20 @@ class NotificationBridge {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (pigeonVar_replyList[0] as List<Object?>?)!.cast<NativeNotificationRevision?>();
+      return (pigeonVar_replyList[0] as List<Object?>?)!
+          .cast<NativeNotificationRevision?>();
     }
   }
 
   Future<List<NativeAppMetadata?>> getAllAppMetadata() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getAllAppMetadata$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getAllAppMetadata$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
@@ -570,18 +582,23 @@ class NotificationBridge {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (pigeonVar_replyList[0] as List<Object?>?)!.cast<NativeAppMetadata?>();
+      return (pigeonVar_replyList[0] as List<Object?>?)!
+          .cast<NativeAppMetadata?>();
     }
   }
 
   Future<NativeAppMetadata?> getAppMetadata(String packageName) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getAppMetadata$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getAppMetadata$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[packageName],
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[packageName]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -598,13 +615,17 @@ class NotificationBridge {
   }
 
   Future<void> setAppLoggingStatus(String packageName, bool enabled) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.setAppLoggingStatus$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.setAppLoggingStatus$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[packageName, enabled],
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[packageName, enabled]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -621,13 +642,17 @@ class NotificationBridge {
   }
 
   Future<void> exportData(String type) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.exportData$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.exportData$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[type],
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[type]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -644,12 +669,14 @@ class NotificationBridge {
   }
 
   Future<List<String>> getNativeLogFiles() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getNativeLogFiles$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
-      pigeonVar_channelName,
-      pigeonChannelCodec,
-      binaryMessenger: pigeonVar_binaryMessenger,
-    );
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getNativeLogFiles$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel =
+        BasicMessageChannel<Object?>(
+          pigeonVar_channelName,
+          pigeonChannelCodec,
+          binaryMessenger: pigeonVar_binaryMessenger,
+        );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;

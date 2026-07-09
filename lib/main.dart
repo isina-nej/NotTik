@@ -14,7 +14,11 @@ void main() async {
   await AppLogger.init();
 
   FlutterError.onError = (details) {
-    AppLogger.error('Flutter UI Error', error: details.exception, stackTrace: details.stack);
+    AppLogger.error(
+      'Flutter UI Error',
+      error: details.exception,
+      stackTrace: details.stack,
+    );
     FlutterError.presentError(details);
   };
 

@@ -1,0 +1,11 @@
+id: "polish-and-bugfixes"
+title: "Polish, Refactor, and Bugfixes"
+description: "Resolves missing fonts, dead Pigeon files, localization gaps, Room DAO threading, JSON export, and UI flaws."
+status: "proposed"
+base_branch: "master"
+target_branch: "master"
+created_at: "2026-07-10T12:00:00Z"
+specs:
+  - "specs/cleanup-and-refactor/spec.md"
+  - "specs/ui-and-ux/spec.md"
+  - "specs/localization/spec.md"

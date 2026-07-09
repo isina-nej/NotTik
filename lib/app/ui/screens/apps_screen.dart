@@ -17,7 +17,9 @@ class AppsScreen extends ConsumerWidget {
       body: appsAsync.when(
         data: (apps) {
           if (apps.isEmpty) {
-            return const Center(child: Text('هنوز هیچ برنامه‌ای ثبت نشده است.'));
+            return const Center(
+              child: Text('هنوز هیچ برنامه‌ای ثبت نشده است.'),
+            );
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -33,13 +35,23 @@ class AppsScreen extends ConsumerWidget {
                     subtitle: Text(app.packageName ?? ''),
                     value: app.isLoggingEnabled ?? true,
                     onChanged: (val) {
-                      ref.read(appsManagementProvider.notifier)
-                          .toggleLogging(app.packageName!, app.isLoggingEnabled ?? true);
+                      ref
+                          .read(appsManagementProvider.notifier)
+                          .toggleLogging(
+                            app.packageName!,
+                            app.isLoggingEnabled ?? true,
+                          );
                     },
                     secondary: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-                      child: Icon(Icons.android, 
-                          color: Theme.of(context).colorScheme.onSecondaryContainer),
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.secondaryContainer,
+                      child: Icon(
+                        Icons.android,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSecondaryContainer,
+                      ),
                     ),
                   ),
                 ),

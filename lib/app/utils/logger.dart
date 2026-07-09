@@ -41,10 +41,16 @@ class AppLogger {
     _log('DEBUG', message, error, stackTrace);
   }
 
-  static Future<void> _log(String level, String message, Object? error, StackTrace? stackTrace) async {
+  static Future<void> _log(
+    String level,
+    String message,
+    Object? error,
+    StackTrace? stackTrace,
+  ) async {
     final timestamp = DateTime.now().toIso8601String();
-    final logMessage = '[$timestamp] [$level] $message${error != null ? '\nError: $error' : ''}${stackTrace != null ? '\nStack: $stackTrace' : ''}';
-    
+    final logMessage =
+        '[$timestamp] [$level] $message${error != null ? '\nError: $error' : ''}${stackTrace != null ? '\nStack: $stackTrace' : ''}';
+
     if (kDebugMode) {
       developer.log(message, name: level, error: error, stackTrace: stackTrace);
     }
@@ -52,10 +58,14 @@ class AppLogger {
     if (!_initialized || _currentLogFile == null) return;
 
     try {
-      if (await _currentLogFile!.exists() && await _currentLogFile!.length() > _maxFileSize) {
+      if (await _currentLogFile!.exists() &&
+          await _currentLogFile!.length() > _maxFileSize) {
         await _rotateFiles();
       }
-      await _currentLogFile!.writeAsString('$logMessage\n', mode: FileMode.append);
+      await _currentLogFile!.writeAsString(
+        '$logMessage\n',
+        mode: FileMode.append,
+      );
     } catch (e) {
       debugPrint('Failed to write log: $e');
     }
@@ -78,6 +88,10 @@ class AppLogger {
   static Future<List<File>> getLogFiles() async {
     if (!_initialized || _currentLogFile == null) return [];
     final dir = _currentLogFile!.parent;
-    return dir.listSync().whereType<File>().where((f) => f.path.endsWith('.log')).toList();
+    return dir
+        .listSync()
+        .whereType<File>()
+        .where((f) => f.path.endsWith('.log'))
+        .toList();
   }
 }

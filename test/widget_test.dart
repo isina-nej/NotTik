@@ -7,11 +7,17 @@ import 'package:nottik/app/data/providers/history_provider.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 
 void main() {
-  testWidgets('NotTik App launches and shows onboarding if no connection', (WidgetTester tester) async {
+  testWidgets('NotTik App launches and shows onboarding if no connection', (
+    WidgetTester tester,
+  ) async {
     final container = ProviderScope(
       overrides: [
-        listenerConnectedProvider.overrideWith(() => MockListenerConnectedFalse()),
-        notificationHistoryProvider.overrideWith(() => MockNotificationHistory()),
+        listenerConnectedProvider.overrideWith(
+          () => MockListenerConnectedFalse(),
+        ),
+        notificationHistoryProvider.overrideWith(
+          () => MockNotificationHistory(),
+        ),
       ],
       child: const NotTikApp(),
     );
@@ -19,12 +25,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.notifications_off_outlined), findsOneWidget);
   });
-  
-  testWidgets('NotTik App launches History if connection is present', (WidgetTester tester) async {
+
+  testWidgets('NotTik App launches History if connection is present', (
+    WidgetTester tester,
+  ) async {
     final container = ProviderScope(
       overrides: [
-        listenerConnectedProvider.overrideWith(() => MockListenerConnectedTrue()),
-        notificationHistoryProvider.overrideWith(() => MockNotificationHistory()),
+        listenerConnectedProvider.overrideWith(
+          () => MockListenerConnectedTrue(),
+        ),
+        notificationHistoryProvider.overrideWith(
+          () => MockNotificationHistory(),
+        ),
       ],
       child: const NotTikApp(),
     );

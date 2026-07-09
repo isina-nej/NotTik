@@ -6,7 +6,7 @@ part 'detail_provider.g.dart';
 @riverpod
 class NotificationDetail extends _$NotificationDetail {
   final NotificationBridge _bridge = NotificationBridge();
-  
+
   @override
   FutureOr<List<NativeNotificationRevision>> build(int recordId) async {
     return _fetchRevisions(recordId);

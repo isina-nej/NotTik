@@ -6,7 +6,7 @@ part 'history_provider.g.dart';
 @riverpod
 class NotificationHistory extends _$NotificationHistory {
   final NotificationBridge _bridge = NotificationBridge();
-  
+
   String? _searchQuery;
   String? _category;
 
@@ -26,16 +26,21 @@ class NotificationHistory extends _$NotificationHistory {
   }
 
   Future<List<NativeNotificationRecord>> _fetchPage(int offset) async {
-    final result = await _bridge.getLatestHistory(offset, 20, _searchQuery, _category);
+    final result = await _bridge.getLatestHistory(
+      offset,
+      20,
+      _searchQuery,
+      _category,
+    );
     return result.items?.whereType<NativeNotificationRecord>().toList() ?? [];
   }
 
   Future<void> loadMore() async {
     if (state.isLoading || state.hasError) return;
-    
+
     final currentList = state.valueOrNull ?? [];
     state = const AsyncLoading();
-    
+
     try {
       final newItems = await _fetchPage(currentList.length);
       state = AsyncData([...currentList, ...newItems]);
@@ -43,7 +48,7 @@ class NotificationHistory extends _$NotificationHistory {
       state = AsyncError(e, st);
     }
   }
-  
+
   Future<void> refresh() async {
     state = const AsyncLoading();
     try {

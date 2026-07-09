@@ -15,11 +15,17 @@ class HistoryScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.appTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(
+          l10n.appTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60.0),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'جستجو...',
@@ -32,11 +38,15 @@ class HistoryScreen extends ConsumerWidget {
                 fillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
               ),
               onSubmitted: (value) {
-                ref.read(notificationHistoryProvider.notifier).setSearchQuery(value);
+                ref
+                    .read(notificationHistoryProvider.notifier)
+                    .setSearchQuery(value);
               },
               onChanged: (value) {
                 if (value.isEmpty) {
-                  ref.read(notificationHistoryProvider.notifier).setSearchQuery(null);
+                  ref
+                      .read(notificationHistoryProvider.notifier)
+                      .setSearchQuery(null);
                 }
               },
             ),
@@ -64,12 +74,18 @@ class HistoryScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.inbox_outlined, size: 80, color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)),
+                  Icon(
+                    Icons.inbox_outlined,
+                    size: 80,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.5),
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'هیچ نوتیفیکیشنی یافت نشد.', // Localize later
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -77,7 +93,8 @@ class HistoryScreen extends ConsumerWidget {
             );
           }
           return RefreshIndicator(
-            onRefresh: () => ref.read(notificationHistoryProvider.notifier).refresh(),
+            onRefresh: () =>
+                ref.read(notificationHistoryProvider.notifier).refresh(),
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               itemCount: records.length + 1,
@@ -87,25 +104,36 @@ class HistoryScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(vertical: 24.0),
                     child: Center(
                       child: FilledButton.tonal(
-                        onPressed: () => ref.read(notificationHistoryProvider.notifier).loadMore(),
+                        onPressed: () => ref
+                            .read(notificationHistoryProvider.notifier)
+                            .loadMore(),
                         child: const Text('بارگذاری بیشتر'), // Localize later
                       ),
                     ),
                   );
                 }
-                
+
                 final record = records[index];
-                
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: GlassmorphismCard(
                     padding: const EdgeInsets.all(0),
                     child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                        child: Icon(Icons.notifications_active_outlined, 
-                            color: Theme.of(context).colorScheme.onPrimaryContainer),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).colorScheme.primaryContainer,
+                        child: Icon(
+                          Icons.notifications_active_outlined,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onPrimaryContainer,
+                        ),
                       ),
                       title: Text(
                         record.appName ?? record.packageName ?? 'Unknown',
@@ -129,12 +157,20 @@ class HistoryScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.redAccent),
+              const Icon(
+                Icons.error_outline,
+                size: 48,
+                color: Colors.redAccent,
+              ),
               const SizedBox(height: 16),
-              Text('خطا در دریافت اطلاعات', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'خطا در دریافت اطلاعات',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 16),
               FilledButton(
-                onPressed: () => ref.read(notificationHistoryProvider.notifier).refresh(),
+                onPressed: () =>
+                    ref.read(notificationHistoryProvider.notifier).refresh(),
                 child: const Text('تلاش مجدد'),
               ),
             ],

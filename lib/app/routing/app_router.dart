@@ -18,7 +18,7 @@ GoRouter appRouter(AppRouterRef ref) {
     initialLocation: '/',
     redirect: (context, state) {
       if (isConnected.isLoading) return null;
-      
+
       final connected = isConnected.valueOrNull ?? false;
       final isGoingToOnboarding = state.matchedLocation == '/onboarding';
 
@@ -31,10 +31,7 @@ GoRouter appRouter(AppRouterRef ref) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const HistoryScreen(),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const HistoryScreen()),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
@@ -46,10 +43,7 @@ GoRouter appRouter(AppRouterRef ref) {
           return DetailScreen(record: record);
         },
       ),
-      GoRoute(
-        path: '/apps',
-        builder: (context, state) => const AppsScreen(),
-      ),
+      GoRoute(path: '/apps', builder: (context, state) => const AppsScreen()),
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),

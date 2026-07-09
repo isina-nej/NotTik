@@ -1,12 +1,13 @@
 import 'package:pigeon/pigeon.dart';
 
-@ConfigurePigeon(PigeonOptions(
-  dartOut: 'lib/app/bridge/pigeon.dart',
-  dartOptions: DartOptions(),
-  kotlinOut: 'android/app/src/main/kotlin/com/nottik/app/bridge/Pigeon.kt',
-  kotlinOptions: KotlinOptions(package: 'com.nottik.app.bridge'),
-))
-
+@ConfigurePigeon(
+  PigeonOptions(
+    dartOut: 'lib/app/bridge/pigeon.dart',
+    dartOptions: DartOptions(),
+    kotlinOut: 'android/app/src/main/kotlin/com/nottik/app/bridge/Pigeon.kt',
+    kotlinOptions: KotlinOptions(package: 'com.nottik.app.bridge'),
+  ),
+)
 class NativeNotificationRecord {
   int? id;
   String? notificationKey;
@@ -69,16 +70,21 @@ abstract class NotificationBridge {
   bool isListenerConnected();
   void openListenerSettings();
   void requestRebind();
-  
+
   @async
   ListenerDiagnostics getListenerDiagnostics();
-  
+
   @async
-  PaginatedResult getLatestHistory(int offset, int limit, String? searchQuery, String? category);
-  
+  PaginatedResult getLatestHistory(
+    int offset,
+    int limit,
+    String? searchQuery,
+    String? category,
+  );
+
   @async
   NativeNotificationRecord? getRecordDetails(int id);
-  
+
   @async
   List<NativeNotificationRevision?> getRevisions(int recordId);
 
