@@ -1,0 +1,117 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # Fail fast: skip draft PRs
+  guard:
+    name: Guard · Skip drafts
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - id: check
+        run: |
+          if [ "${{ github.event.pull_request.draft }}" = "true" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  pr-title:
+    name: PR · Conventional title
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.skip == 'false'
+    steps:
+      - name: Validate PR title (Conventional Commits)
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            refactor
+            docs
+            test
+            ci
+            chore
+            perf
+            revert
+          requireScope: false
+          subjectPattern: ^.{1,72}$
+          subjectPatternError: |
+            عنوان PR باید کمتر از 72 کاراکتر باشد.
+
+  size-check:
+    name: PR · Size label
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.skip == 'false'
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: codelytv/pr-size-labeler@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          xs_label: "size/XS"
+          xs_max_size: 10
+          s_label: "size/S"
+          s_max_size: 100
+          m_label: "size/M"
+          m_max_size: 500
+          l_label: "size/L"
+          l_max_size: 1000
+          xl_label: "size/XL"
+          fail_if_xl: false
+
+  danger:
+    name: PR · Danger checks
+    runs-on: ubuntu-latest
+    needs: guard
+    if: needs.guard.outputs.skip == 'false'
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for INTERNET permission leak
+        run: |
+          if git diff origin/${{ github.base_ref }}...HEAD -- android/app/src/main/AndroidManifest.xml \
+             | grep '^\+' | grep -q 'INTERNET'; then
+            echo "::error::🚨 INTERNET permission detected in AndroidManifest diff! This violates project rules."
+            exit 1
+          fi
+          echo "✅ No INTERNET permission leak."
+
+      - name: Check for hardcoded secrets
+        run: |
+          # Look for obvious patterns in changed files
+          if git diff origin/${{ github.base_ref }}...HEAD \
+             | grep '^\+' \
+             | grep -iE '(api_key|apikey|password|secret|token)\s*=\s*"[^"]{8,}"' \
+             | grep -v 'GITHUB_TOKEN\|secrets\.\|Placeholder\|example\|your_'; then
+            echo "::error::🚨 Possible hardcoded secret detected."
+            exit 1
+          fi
+          echo "✅ No obvious hardcoded secrets."
+
+      - name: Verify no root/accessibility bypass
+        run: |
+          if git diff origin/${{ github.base_ref }}...HEAD \
+             | grep '^\+' \
+             | grep -qE 'AccessibilityService|BIND_ACCESSIBILITY_SERVICE|requestRootAccess|su '; then
+            echo "::error::🚨 Root or AccessibilityService usage detected — violates AGENTS.md rules."
+            exit 1
+          fi
+          echo "✅ No root/accessibility bypass."

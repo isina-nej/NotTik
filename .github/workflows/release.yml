@@ -1,0 +1,119 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"        # v1.2.3
+      - "v[0-9]+.[0-9]+.[0-9]+-rc*"    # v1.2.3-rc1
+
+env:
+  FLUTTER_VERSION: "3.44.4"
+  JAVA_VERSION: "17"
+
+jobs:
+  release-apk:
+    name: Build & Release APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for changelog generation
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          # Strip leading 'v'
+          VERSION="${TAG#v}"
+          # Build number: number of commits
+          BUILD=$(git rev-list --count HEAD)
+          echo "tag=$TAG"         >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD"     >> "$GITHUB_OUTPUT"
+
+      # ── Decode keystore from secret ──────────────────────────────
+      # Store your keystore as a base64 secret: KEYSTORE_BASE64
+      # Store keystore props as: KEY_ALIAS, KEY_PASSWORD, STORE_PASSWORD
+      - name: Decode release keystore
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release.jks
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: Build release APK
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          flutter build apk --release --no-pub \
+            --build-name=${{ steps.version.outputs.version }} \
+            --build-number=${{ steps.version.outputs.build }}
+
+      - name: Rename APK
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/nottik-${{ steps.version.outputs.tag }}.apk
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]' | sed -n '2p')
+          if [ -n "$PREV_TAG" ]; then
+            CHANGES=$(git log "${PREV_TAG}..HEAD" --pretty=format:"- %s" --no-merges)
+          else
+            CHANGES=$(git log --pretty=format:"- %s" --no-merges | head -30)
+          fi
+          echo "changes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGES"     >> "$GITHUB_OUTPUT"
+          echo "EOF"          >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: NotTik ${{ steps.version.outputs.tag }}
+          tag_name: ${{ steps.version.outputs.tag }}
+          draft: ${{ contains(steps.version.outputs.tag, '-rc') }}
+          prerelease: ${{ contains(steps.version.outputs.tag, '-rc') }}
+          body: |
+            ## 📦 NotTik ${{ steps.version.outputs.tag }}
+
+            ### تغییرات این نسخه
+            ${{ steps.changelog.outputs.changes }}
+
+            ---
+            **Build:** `${{ steps.version.outputs.build }}`  
+            **Flutter:** `${{ env.FLUTTER_VERSION }}`  
+            **minSdk:** 26 (Android 8.0+)
+
+            > ⚠️ برای نصب، ابتدا «نصب از منابع ناشناخته» را در تنظیمات فعال کنید.
+          files: |
+            build/app/outputs/flutter-apk/nottik-${{ steps.version.outputs.tag }}.apk

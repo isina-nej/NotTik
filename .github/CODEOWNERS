@@ -1,0 +1,22 @@
+# CODEOWNERS — NotTik
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owner
+* @isina-nej
+
+# Flutter / Dart layer
+lib/                          @isina-nej
+test/                         @isina-nej
+pubspec.yaml                  @isina-nej
+pubspec.lock                  @isina-nej
+analysis_options.yaml         @isina-nej
+
+# Kotlin / Android native layer
+android/                      @isina-nej
+pigeons/                      @isina-nej
+
+# CI/CD — requires careful review
+.github/                      @isina-nej
+
+# Specs & planning
+openspec/                     @isina-nej
