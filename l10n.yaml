@@ -1,0 +1,8 @@
+arb-dir: lib/l10n
+template-arb-file: app_fa.arb
+output-dir: lib/l10n/generated
+output-localization-file: app_localizations.dart
+preferred-supported-locales:
+  - fa
+  - en
+synthetic-package: false

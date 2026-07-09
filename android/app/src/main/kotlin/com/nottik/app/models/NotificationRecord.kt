@@ -15,6 +15,9 @@ data class NotificationRecord(
     @ColumnInfo(name = "package_name")
     val packageName: String,
     
+    @ColumnInfo(name = "app_name")
+    val appName: String? = null,
+    
     @ColumnInfo(name = "notification_id")
     val notificationId: Int,
     
@@ -27,9 +30,36 @@ data class NotificationRecord(
     @ColumnInfo(name = "first_captured_time")
     val firstCapturedTime: Long,
     
+    @ColumnInfo(name = "last_update_time")
+    val lastUpdateTime: Long,
+    
+    @ColumnInfo(name = "group_key")
+    val groupKey: String? = null,
+    
+    @ColumnInfo(name = "channel_id")
+    val channelId: String? = null,
+    
+    @ColumnInfo(name = "priority")
+    val priority: Int = 0,
+    
+    @ColumnInfo(name = "visibility")
+    val visibility: Int = 0,
+    
+    @ColumnInfo(name = "is_ongoing")
+    val isOngoing: Boolean = false,
+    
+    @ColumnInfo(name = "is_clearable")
+    val isClearable: Boolean = true,
+    
+    @ColumnInfo(name = "is_group_summary")
+    val isGroupSummary: Boolean = false,
+    
     @ColumnInfo(name = "is_removed")
     val isRemoved: Boolean = false,
     
     @ColumnInfo(name = "removal_reason")
-    val removalReason: Int? = null
+    val removalReason: Int? = null,
+    
+    @ColumnInfo(name = "custom_category")
+    val customCategory: String? = null
 )

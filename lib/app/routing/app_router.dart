@@ -1,27 +1,39 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../../features/onboarding/presentation/onboarding_screen.dart';
-import '../../features/dashboard/presentation/dashboard_screen.dart';
+import 'package:nottik/app/ui/screens/onboarding_screen.dart';
+import 'package:nottik/app/ui/screens/history_screen.dart';
+import 'package:nottik/app/data/providers/listener_provider.dart';
 
 part 'app_router.g.dart';
 
-final rootNavigatorKey = GlobalKey<NavigatorState>();
-
 @riverpod
 GoRouter appRouter(AppRouterRef ref) {
+  final isListenerConnected = ref.watch(listenerConnectedProvider);
+
   return GoRouter(
-    navigatorKey: rootNavigatorKey,
     initialLocation: '/',
+    redirect: (context, state) {
+      // If the listener is not connected, redirect to onboarding.
+      // We will only do this once the provider resolves its async state.
+      if (isListenerConnected.valueOrNull == false && state.matchedLocation != '/onboarding') {
+        return '/onboarding';
+      }
+      
+      // If connected and trying to go to onboarding, go to history instead
+      if (isListenerConnected.valueOrNull == true && state.matchedLocation == '/onboarding') {
+        return '/';
+      }
+      
+      return null; // No redirect
+    },
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const OnboardingScreen(),
+        builder: (context, state) => const HistoryScreen(),
       ),
       GoRoute(
-        path: '/dashboard',
-        builder: (context, state) => const DashboardScreen(),
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
       ),
     ],
   );

@@ -56,6 +56,23 @@
 - **Rejected Alternatives:** Requesting `QUERY_ALL_PACKAGES` (violates store policies and prompt rules).
 - **Remaining Risk:** Users might want to filter an app before it sends a notification or if it doesn't have a launcher icon. They'll have to wait until it posts a notification.
 
+## Research Lane F: Notification Extras Extraction
+
+- **Date:** 2026-07-09
+- **Source:** AOSP `Notification.java`, `StatusBarNotification.java` (Android Code Search)
+- **Version:** API 26+ (Android 8.0+), some features API 28+/31+
+- **Finding:** Notification.extras Bundle contains all structured data. Key findings:
+  - **Text fields:** `android.title`, `android.text`, `android.subText`, `android.bigText`, `android.summaryText`, `android.infoText` — all are CharSequence, use `getCharSequence().toString()`.
+  - **MessagingStyle:** `android.messages` contains ParcelableArray of Bundle. Each message Bundle has keys: `text`, `time`, `sender`, `sender_person` (Person), `type`, `uri`, `extras`, `remote_input_history`.
+  - **Images:** `android.largeIcon` (Bitmap, deprecated), `android.picture` (BigPictureStyle), `android.pictureIcon` (Icon, API 31+). Bitmaps can be huge — save to file, store path in Room.
+  - **Grouped notifications:** `StatusBarNotification.getGroupKey()` returns `userId|pkg|g:groupKey`. `Notification.FLAG_GROUP_SUMMARY` (0x200) identifies group summaries. `isGroupSummary()` and `isGroupChild()` are hidden APIs but accessible from Listener.
+  - **Category detection:** `notification.category` provides semantic type (call, msg, email, event, etc.). `extras.getString("android.template")` provides style class name (MessagingStyle, CallStyle, etc.).
+  - **Safe extraction:** Every Bundle field MUST be accessed independently with its own try-catch. `BadParcelableException` and `ClassCastException` are common.
+- **Impact on NotTik:** Current NottikNotificationListener only extracts `title` and `text`. Need to expand to extract all extras fields, MessagingStyle messages, images, and group info.
+- **Chosen Approach:** Per-field try-catch extraction, save Bitmaps to files with paths in Room, use template+category for type detection.
+- **Deliverable:** `docs/research/notification-extras-research.md` (1130 lines, Persian with Kotlin code examples)
+- **Remaining Risk:** Some apps use custom RemoteViews which bypass standard extras. Custom views won't be extractable via extras alone.
+
 ## Research Lane E: Storage and Background Cleanup
 
 - **Date:** 2026-07-09

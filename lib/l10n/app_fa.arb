@@ -1,0 +1,13 @@
+{
+  "@@locale": "fa",
+  "appTitle": "نات‌تیک",
+  "@appTitle": {
+    "description": "نام اپلیکیشن"
+  },
+  "onboardingTitle": "به نات‌تیک خوش آمدید",
+  "onboardingDesc": "برای ذخیره‌سازی آفلاین و امن نوتیفیکیشن‌ها، نیاز به دسترسی خواندن اعلانات داریم.",
+  "grantPermission": "اعطای دسترسی",
+  "historyTitle": "تاریخچه اعلانات",
+  "emptyHistory": "هنوز هیچ اعلانی دریافت نشده است.",
+  "settingsTitle": "تنظیمات"
+}

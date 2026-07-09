@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "appTitle": "NotTik",
+  "@appTitle": {
+    "description": "The application name"
+  },
+  "onboardingTitle": "Welcome to NotTik",
+  "onboardingDesc": "To securely save notifications offline, we need Notification Access permission.",
+  "grantPermission": "Grant Permission",
+  "historyTitle": "Notification History",
+  "emptyHistory": "No notifications captured yet.",
+  "settingsTitle": "Settings"
+}
