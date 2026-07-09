@@ -1,10 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nottik/l10n/generated/app_localizations.dart';
+import 'package:nottik/app/data/providers/locale_provider.dart';
+import 'package:nottik/app/data/providers/theme_provider.dart';
 import 'package:nottik/app/routing/app_router.dart';
+import 'package:nottik/app/ui/theme/app_theme.dart';
+import 'package:nottik/app/utils/logger.dart';
+import 'package:nottik/l10n/generated/app_localizations.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await AppLogger.init();
+
+  FlutterError.onError = (details) {
+    AppLogger.error('Flutter UI Error', error: details.exception, stackTrace: details.stack);
+    FlutterError.presentError(details);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    AppLogger.error('Unhandled Async Error', error: error, stackTrace: stack);
+    return true;
+  };
+
   runApp(const ProviderScope(child: NotTikApp()));
 }
 
@@ -14,40 +32,18 @@ class NotTikApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(appRouterProvider);
-    
+    final themeMode = ref.watch(appThemeModeProvider);
+    final locale = ref.watch(appLocaleProvider);
+
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
-      
-      // Theme settings (Light, Dark, System)
-      themeMode: ThemeMode.system,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
-
-      // Localization
+      themeMode: themeMode,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      // Default to Persian, fallback to English
-      localeResolutionCallback: (locale, supportedLocales) {
-        if (locale?.languageCode == 'en') {
-          return const Locale('en', '');
-        }
-        return const Locale('fa', '');
-      },
-      
-      // Routing
       routerConfig: router,
     );
   }

@@ -11,7 +11,7 @@
 - [x] Implement AppDatabase, NotificationRecord entity, NotificationRevision entity, NotificationDao in Kotlin.
 - [x] Add all required fields to NotificationRecord (appName, appNameEn, groupKey, channelId, priority, visibility, ongoing, clearable, isGroupSummary, lastUpdateTime, mediaPath, customCategory).
 - [x] Add all required fields to NotificationRevision (subText, bigText, summaryText, infoText, textLines, conversationTitle, messagingMessages, progressMax, progressValue, progressIndeterminate, largeIconPath, bigPicturePath, appIconPath).
-- [ ] Add AppMetadata entity with per-app retention settings.
+- [x] Add AppMetadata entity with per-app retention settings.
 - [x] Add foreign keys and cascade behavior.
 - [x] Add indexed stable identity (unique constraint on packageName+notificationId+tag).
 - [x] Add Room schema export configuration.
@@ -20,7 +20,7 @@
 - [x] Add notification-detail query (record + all revisions).
 - [x] Add revision-list query.
 - [x] Add removal update transaction (update record + set removalReason + removalTime).
-- [ ] Verify Room compiles via KSP.
+- [x] Verify Room compiles via KSP.
 
 ## Phase 4c: Pigeon Bridge
 - [x] Define initial Pigeon schema (isListenerConnected, requestRebind, openNotificationSettings).
@@ -28,59 +28,59 @@
 - [x] Add notification detail API.
 - [x] Add revision list API.
 - [x] Add removal handling API.
-- [ ] Add app metadata query API.
-- [ ] Add filter configuration API.
+- [x] Add app metadata query API.
+- [x] Add filter configuration API.
 - [x] Regenerate Pigeon Dart and Kotlin files.
 
 ## Phase 4d: NotificationListenerService
 - [x] Basic onNotificationPosted and onNotificationRemoved skeleton.
 - [x] Extract all required fields safely with per-field try-catch.
-- [ ] Handle MessagingStyle messages.
+- [x] Handle MessagingStyle messages.
 - [x] Handle grouped notifications (groupKey, group summary).
-- [ ] Extract largeIcon, bigPicture, appIcon bitmaps and save to internal storage.
+- [x] Extract largeIcon, bigPicture, appIcon bitmaps and save to internal storage.
 - [x] Implement semantic content hashing (all text fields, not just title+text).
 - [x] Implement duplicate revision prevention with hash comparison.
 - [x] Handle onNotificationRemoved (update removalTime and removalReason).
 - [x] Add lifecycle cancellation for CoroutineScope (override onDestroy).
 - [x] Remove sensitive Log.d/Log.e calls (only log package name in debug).
-- [ ] Add listener connection diagnostics.
+- [x] Add listener connection diagnostics.
 
 ## Phase 4e: Build Fix
-- [ ] Fix Gradle build: resolve KSP plugin version compatibility.
-- [ ] Verify KSP runs successfully for Room compiler.
+- [x] Fix Gradle build: resolve KSP plugin version compatibility.
+- [x] Verify KSP runs successfully for Room compiler.
 - [x] Verify `flutter analyze` passes.
-- [ ] Verify Kotlin compilation passes.
-- [ ] Verify minimal Debug APK builds.
-- [ ] Create Git checkpoint after successful build.
+- [x] Verify Kotlin compilation passes.
+- [x] Verify minimal Debug APK builds.
+- [x] Create Git checkpoint after successful build.
 
 ## Phase 5: Flutter UI — Vertical Slice
 - [x] Set up gen_l10n for Persian (default) and English.
-- [ ] Implement complete theme system (Light/Dark/System, semantic colors).
+- [x] Implement complete theme system (Light/Dark/System, semantic colors).
 - [x] Build Onboarding screen with localized strings and RTL support.
 - [x] Build History list with pagination/infinite scroll.
-- [ ] Build Notification Detail screen with revision history.
+- [x] Build Notification Detail screen with revision history.
 - [x] Build loading, empty, and error states for all screens.
 - [x] Ensure all user-facing strings come from localization files.
 - [x] Ensure Persian is default, RTL works; English LTR works.
 
 ## Phase 6: Remaining Features
-- [ ] Implement application filtering logic (Mode A / Mode B).
-- [ ] Build App Management / Filtering UI.
-- [ ] Implement Category assignment and Search logic + UI.
+- [x] Implement application filtering logic (Mode A / Mode B).
+- [x] Build App Management / Filtering UI.
+- [x] Implement Category assignment and Search logic + UI.
 - [ ] Implement Favorites.
-- [ ] Build Settings screen (retention policy, theme, language).
-- [ ] Implement WorkManager background cleanup.
-- [ ] Implement Export (JSON/CSV) using SAF.
-- [ ] Implement Backup (ZIP archive) and Restore.
+- [x] Build Settings screen (retention policy, theme, language).
+- [x] Implement WorkManager background cleanup.
+- [x] Implement Export (JSON/CSV) using SAF.
+- [x] Implement Backup (ZIP archive) and Restore.
 - [ ] Build Statistics view.
 - [ ] Build Diagnostics view.
 
 ## Phase 7: Testing
-- [ ] Kotlin unit tests: stable identity, hashing, duplicate revision suppression, null extras, malformed fields, Room insert/query, pagination, record/revision relationship.
-- [ ] Flutter widget tests: Persian default, RTL, LTR, empty history, populated history, loading, error, detail screen.
-- [ ] Verify `dart format --set-exit-if-changed .` passes.
-- [ ] Verify `flutter analyze` passes.
-- [ ] Verify `flutter test` passes.
+- [x] Kotlin unit tests: stable identity, hashing, duplicate revision suppression, null extras, malformed fields, Room insert/query, pagination, record/revision relationship.
+- [x] Flutter widget tests: Persian default, RTL, LTR, empty history, populated history, loading, error, detail screen.
+- [x] Verify `dart format --set-exit-if-changed .` passes.
+- [x] Verify `flutter analyze` passes.
+- [x] Verify `flutter test` passes.
 - [ ] Verify `./gradlew lint` passes.
 - [ ] Verify `./gradlew test` passes.
 

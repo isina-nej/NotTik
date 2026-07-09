@@ -195,6 +195,57 @@ data class PaginatedResult (
     )
   }
 }
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class NativeAppMetadata (
+  val packageName: String? = null,
+  val appName: String? = null,
+  val isLoggingEnabled: Boolean? = null,
+  val retentionDays: Long? = null
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): NativeAppMetadata {
+      val packageName = pigeonVar_list[0] as String?
+      val appName = pigeonVar_list[1] as String?
+      val isLoggingEnabled = pigeonVar_list[2] as Boolean?
+      val retentionDays = pigeonVar_list[3] as Long?
+      return NativeAppMetadata(packageName, appName, isLoggingEnabled, retentionDays)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      packageName,
+      appName,
+      isLoggingEnabled,
+      retentionDays,
+    )
+  }
+}
+
+/** Generated class from Pigeon that represents data sent in messages. */
+data class ListenerDiagnostics (
+  val isRunning: Boolean? = null,
+  val hasError: Boolean? = null,
+  val errorMessage: String? = null
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): ListenerDiagnostics {
+      val isRunning = pigeonVar_list[0] as Boolean?
+      val hasError = pigeonVar_list[1] as Boolean?
+      val errorMessage = pigeonVar_list[2] as String?
+      return ListenerDiagnostics(isRunning, hasError, errorMessage)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      isRunning,
+      hasError,
+      errorMessage,
+    )
+  }
+}
 private open class PigeonPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
@@ -211,6 +262,16 @@ private open class PigeonPigeonCodec : StandardMessageCodec() {
       131.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
           PaginatedResult.fromList(it)
+        }
+      }
+      132.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          NativeAppMetadata.fromList(it)
+        }
+      }
+      133.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          ListenerDiagnostics.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -230,6 +291,14 @@ private open class PigeonPigeonCodec : StandardMessageCodec() {
         stream.write(131)
         writeValue(stream, value.toList())
       }
+      is NativeAppMetadata -> {
+        stream.write(132)
+        writeValue(stream, value.toList())
+      }
+      is ListenerDiagnostics -> {
+        stream.write(133)
+        writeValue(stream, value.toList())
+      }
       else -> super.writeValue(stream, value)
     }
   }
@@ -241,9 +310,15 @@ interface NotificationBridge {
   fun isListenerConnected(): Boolean
   fun openListenerSettings()
   fun requestRebind()
-  fun getLatestHistory(offset: Long, limit: Long, callback: (Result<PaginatedResult>) -> Unit)
+  fun getListenerDiagnostics(callback: (Result<ListenerDiagnostics>) -> Unit)
+  fun getLatestHistory(offset: Long, limit: Long, searchQuery: String?, category: String?, callback: (Result<PaginatedResult>) -> Unit)
   fun getRecordDetails(id: Long, callback: (Result<NativeNotificationRecord?>) -> Unit)
   fun getRevisions(recordId: Long, callback: (Result<List<NativeNotificationRevision?>>) -> Unit)
+  fun getAllAppMetadata(callback: (Result<List<NativeAppMetadata?>>) -> Unit)
+  fun getAppMetadata(packageName: String, callback: (Result<NativeAppMetadata?>) -> Unit)
+  fun setAppLoggingStatus(packageName: String, enabled: Boolean, callback: (Result<Unit>) -> Unit)
+  fun exportData(type: String, callback: (Result<Unit>) -> Unit)
+  fun getNativeLogFiles(): List<String>
 
   companion object {
     /** The codec used by NotificationBridge. */
@@ -302,13 +377,33 @@ interface NotificationBridge {
         }
       }
       run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.getListenerDiagnostics$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.getListenerDiagnostics{ result: Result<ListenerDiagnostics> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.getLatestHistory$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val offsetArg = args[0] as Long
             val limitArg = args[1] as Long
-            api.getLatestHistory(offsetArg, limitArg) { result: Result<PaginatedResult> ->
+            val searchQueryArg = args[2] as String?
+            val categoryArg = args[3] as String?
+            api.getLatestHistory(offsetArg, limitArg, searchQueryArg, categoryArg) { result: Result<PaginatedResult> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(wrapError(error))
@@ -357,6 +452,98 @@ interface NotificationBridge {
                 reply.reply(wrapResult(data))
               }
             }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.getAllAppMetadata$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            api.getAllAppMetadata{ result: Result<List<NativeAppMetadata?>> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.getAppMetadata$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val packageNameArg = args[0] as String
+            api.getAppMetadata(packageNameArg) { result: Result<NativeAppMetadata?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.setAppLoggingStatus$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val packageNameArg = args[0] as String
+            val enabledArg = args[1] as Boolean
+            api.setAppLoggingStatus(packageNameArg, enabledArg) { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                reply.reply(wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.exportData$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val typeArg = args[0] as String
+            api.exportData(typeArg) { result: Result<Unit> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(wrapError(error))
+              } else {
+                reply.reply(wrapResult(null))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.nottik.NotificationBridge.getNativeLogFiles$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.getNativeLogFiles())
+            } catch (exception: Throwable) {
+              wrapError(exception)
+            }
+            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

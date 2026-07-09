@@ -51,6 +51,19 @@ class PaginatedResult {
   bool? hasMore;
 }
 
+class NativeAppMetadata {
+  String? packageName;
+  String? appName;
+  bool? isLoggingEnabled;
+  int? retentionDays;
+}
+
+class ListenerDiagnostics {
+  bool? isRunning;
+  bool? hasError;
+  String? errorMessage;
+}
+
 @HostApi()
 abstract class NotificationBridge {
   bool isListenerConnected();
@@ -58,11 +71,28 @@ abstract class NotificationBridge {
   void requestRebind();
   
   @async
-  PaginatedResult getLatestHistory(int offset, int limit);
+  ListenerDiagnostics getListenerDiagnostics();
+  
+  @async
+  PaginatedResult getLatestHistory(int offset, int limit, String? searchQuery, String? category);
   
   @async
   NativeNotificationRecord? getRecordDetails(int id);
   
   @async
   List<NativeNotificationRevision?> getRevisions(int recordId);
+
+  @async
+  List<NativeAppMetadata?> getAllAppMetadata();
+
+  @async
+  NativeAppMetadata? getAppMetadata(String packageName);
+
+  @async
+  void setAppLoggingStatus(String packageName, bool enabled);
+
+  @async
+  void exportData(String type); // 'json', 'csv', 'zip'
+
+  List<String> getNativeLogFiles();
 }

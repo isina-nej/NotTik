@@ -2,29 +2,33 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:nottik/app/ui/screens/onboarding_screen.dart';
 import 'package:nottik/app/ui/screens/history_screen.dart';
+import 'package:nottik/app/ui/screens/detail_screen.dart';
+import 'package:nottik/app/ui/screens/apps_screen.dart';
+import 'package:nottik/app/ui/screens/settings_screen.dart';
 import 'package:nottik/app/data/providers/listener_provider.dart';
+import 'package:nottik/app/bridge/pigeon.dart';
 
 part 'app_router.g.dart';
 
 @riverpod
 GoRouter appRouter(AppRouterRef ref) {
-  final isListenerConnected = ref.watch(listenerConnectedProvider);
+  final isConnected = ref.watch(listenerConnectedProvider);
 
   return GoRouter(
     initialLocation: '/',
     redirect: (context, state) {
-      // If the listener is not connected, redirect to onboarding.
-      // We will only do this once the provider resolves its async state.
-      if (isListenerConnected.valueOrNull == false && state.matchedLocation != '/onboarding') {
+      if (isConnected.isLoading) return null;
+      
+      final connected = isConnected.valueOrNull ?? false;
+      final isGoingToOnboarding = state.matchedLocation == '/onboarding';
+
+      if (!connected && !isGoingToOnboarding) {
         return '/onboarding';
       }
-      
-      // If connected and trying to go to onboarding, go to history instead
-      if (isListenerConnected.valueOrNull == true && state.matchedLocation == '/onboarding') {
+      if (connected && isGoingToOnboarding) {
         return '/';
       }
-      
-      return null; // No redirect
+      return null;
     },
     routes: [
       GoRoute(
@@ -34,6 +38,21 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/detail',
+        builder: (context, state) {
+          final record = state.extra as NativeNotificationRecord;
+          return DetailScreen(record: record);
+        },
+      ),
+      GoRoute(
+        path: '/apps',
+        builder: (context, state) => const AppsScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );

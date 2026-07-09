@@ -5,4 +5,3 @@ output-localization-file: app_localizations.dart
 preferred-supported-locales:
   - fa
   - en
-synthetic-package: false

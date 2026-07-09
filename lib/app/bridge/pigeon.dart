@@ -238,6 +238,73 @@ class PaginatedResult {
   }
 }
 
+class NativeAppMetadata {
+  NativeAppMetadata({
+    this.packageName,
+    this.appName,
+    this.isLoggingEnabled,
+    this.retentionDays,
+  });
+
+  String? packageName;
+
+  String? appName;
+
+  bool? isLoggingEnabled;
+
+  int? retentionDays;
+
+  Object encode() {
+    return <Object?>[
+      packageName,
+      appName,
+      isLoggingEnabled,
+      retentionDays,
+    ];
+  }
+
+  static NativeAppMetadata decode(Object result) {
+    result as List<Object?>;
+    return NativeAppMetadata(
+      packageName: result[0] as String?,
+      appName: result[1] as String?,
+      isLoggingEnabled: result[2] as bool?,
+      retentionDays: result[3] as int?,
+    );
+  }
+}
+
+class ListenerDiagnostics {
+  ListenerDiagnostics({
+    this.isRunning,
+    this.hasError,
+    this.errorMessage,
+  });
+
+  bool? isRunning;
+
+  bool? hasError;
+
+  String? errorMessage;
+
+  Object encode() {
+    return <Object?>[
+      isRunning,
+      hasError,
+      errorMessage,
+    ];
+  }
+
+  static ListenerDiagnostics decode(Object result) {
+    result as List<Object?>;
+    return ListenerDiagnostics(
+      isRunning: result[0] as bool?,
+      hasError: result[1] as bool?,
+      errorMessage: result[2] as String?,
+    );
+  }
+}
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -255,6 +322,12 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is PaginatedResult) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
+    }    else if (value is NativeAppMetadata) {
+      buffer.putUint8(132);
+      writeValue(buffer, value.encode());
+    }    else if (value is ListenerDiagnostics) {
+      buffer.putUint8(133);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -269,6 +342,10 @@ class _PigeonCodec extends StandardMessageCodec {
         return NativeNotificationRevision.decode(readValue(buffer)!);
       case 131: 
         return PaginatedResult.decode(readValue(buffer)!);
+      case 132: 
+        return NativeAppMetadata.decode(readValue(buffer)!);
+      case 133: 
+        return ListenerDiagnostics.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -362,14 +439,42 @@ class NotificationBridge {
     }
   }
 
-  Future<PaginatedResult> getLatestHistory(int offset, int limit) async {
+  Future<ListenerDiagnostics> getListenerDiagnostics() async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getListenerDiagnostics$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as ListenerDiagnostics?)!;
+    }
+  }
+
+  Future<PaginatedResult> getLatestHistory(int offset, int limit, String? searchQuery, String? category) async {
     final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getLatestHistory$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[offset, limit]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[offset, limit, searchQuery, category]);
     final List<Object?>? pigeonVar_replyList =
         await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
@@ -438,6 +543,131 @@ class NotificationBridge {
       );
     } else {
       return (pigeonVar_replyList[0] as List<Object?>?)!.cast<NativeNotificationRevision?>();
+    }
+  }
+
+  Future<List<NativeAppMetadata?>> getAllAppMetadata() async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getAllAppMetadata$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as List<Object?>?)!.cast<NativeAppMetadata?>();
+    }
+  }
+
+  Future<NativeAppMetadata?> getAppMetadata(String packageName) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getAppMetadata$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[packageName]);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return (pigeonVar_replyList[0] as NativeAppMetadata?);
+    }
+  }
+
+  Future<void> setAppLoggingStatus(String packageName, bool enabled) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.setAppLoggingStatus$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[packageName, enabled]);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> exportData(String type) async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.exportData$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[type]);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<List<String>> getNativeLogFiles() async {
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getNativeLogFiles$pigeonVar_messageChannelSuffix';
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final List<Object?>? pigeonVar_replyList =
+        await pigeonVar_sendFuture as List<Object?>?;
+    if (pigeonVar_replyList == null) {
+      throw _createConnectionError(pigeonVar_channelName);
+    } else if (pigeonVar_replyList.length > 1) {
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
+    } else if (pigeonVar_replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (pigeonVar_replyList[0] as List<Object?>?)!.cast<String>();
     }
   }
 }

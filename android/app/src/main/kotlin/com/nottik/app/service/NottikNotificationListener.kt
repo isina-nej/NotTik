@@ -13,6 +13,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 
+import org.json.JSONArray
+import org.json.JSONObject
+import com.nottik.app.utils.NativeLogger
+
 class NottikNotificationListener : NotificationListenerService() {
     private val TAG = "NottikListener"
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -50,9 +54,37 @@ class NottikNotificationListener : NotificationListenerService() {
         }
     }
 
+    companion object {
+        var isRunning: Boolean = false
+        var lastError: String? = null
+    }
+
+    override fun onListenerConnected() {
+        super.onListenerConnected()
+        isRunning = true
+        lastError = null
+        NativeLogger.init(applicationContext)
+        NativeLogger.info(TAG, "Listener Connected")
+    }
+
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        isRunning = false
+        NativeLogger.info(TAG, "Listener Disconnected")
+    }
+
     private suspend fun handleNotificationPosted(sbn: StatusBarNotification) {
         val notification = sbn.notification
         val extras = notification.extras
+        
+        // Filter based on AppMetadata settings
+        val dao = database.notificationDao()
+        val metadataDao = database.appMetadataDao()
+        
+        val appMetadata = metadataDao.getAppMetadata(sbn.packageName)
+        if (appMetadata != null && !appMetadata.isLoggingEnabled) {
+            return // Skip logging for this app
+        }
         
         // Extract fields safely
         val title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)?.toString()
@@ -67,6 +99,44 @@ class NottikNotificationListener : NotificationListenerService() {
         val progressValue = extras.getInt(android.app.Notification.EXTRA_PROGRESS, 0)
         val progressIndeterminate = extras.getBoolean(android.app.Notification.EXTRA_PROGRESS_INDETERMINATE, false)
         
+        // Extract MessagingStyle messages
+        var messagingMessagesStr: String? = null
+        try {
+            val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
+            if (messages != null && messages.isNotEmpty()) {
+                val jsonArray = JSONArray()
+                for (msgObj in messages) {
+                    if (msgObj is android.os.Bundle) {
+                        val msgJson = JSONObject()
+                        msgJson.put("text", msgObj.getCharSequence("text")?.toString())
+                        msgJson.put("time", msgObj.getLong("time"))
+                        msgJson.put("sender", msgObj.getCharSequence("sender")?.toString())
+                        jsonArray.put(msgJson)
+                    }
+                }
+                messagingMessagesStr = jsonArray.toString()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to extract messages", e)
+        }
+
+        // Extract Images
+        var largeIconPath: String? = null
+        var bigPicturePath: String? = null
+        
+        try {
+            val largeIcon = notification.getLargeIcon()
+            largeIconPath = NotificationImageExtractor.extractAndSaveIcon(this, largeIcon, "large_icon")
+            
+            val bigPicture = extras.getParcelable<android.graphics.Bitmap>(android.app.Notification.EXTRA_PICTURE)
+            bigPicturePath = NotificationImageExtractor.extractAndSaveBitmap(this, bigPicture, "big_picture")
+            
+            val appIcon = notification.smallIcon
+            // App icon is also saved if necessary.
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to extract images", e)
+        }
+        
         // Semantic hashing
         val contentBuilder = StringBuilder()
         contentBuilder.append(sbn.packageName).append("|")
@@ -74,9 +144,9 @@ class NottikNotificationListener : NotificationListenerService() {
         contentBuilder.append(text ?: "").append("|")
         contentBuilder.append(bigText ?: "").append("|")
         contentBuilder.append(progressValue).append("|")
+        contentBuilder.append(messagingMessagesStr ?: "").append("|")
         
         val hash = sha256(contentBuilder.toString())
-        val dao = database.notificationDao()
         
         // Find existing record by stable key
         var record = dao.getRecordByKey(sbn.key)
@@ -135,13 +205,13 @@ class NottikNotificationListener : NotificationListenerService() {
             infoText = infoText,
             textLines = null, // Will parse EXTRA_TEXT_LINES if needed
             conversationTitle = conversationTitle,
-            messagingMessages = null, // Will parse EXTRA_MESSAGES later
+            messagingMessages = messagingMessagesStr,
             progressMax = progressMax,
             progressValue = progressValue,
             progressIndeterminate = progressIndeterminate,
             category = notification.category,
-            largeIconPath = null,
-            bigPicturePath = null,
+            largeIconPath = largeIconPath,
+            bigPicturePath = bigPicturePath,
             appIconPath = null
         )
         
