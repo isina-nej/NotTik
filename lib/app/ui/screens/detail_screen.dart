@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:device_apps/device_apps.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 import 'package:nottik/app/data/providers/detail_provider.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
@@ -19,7 +20,34 @@ class DetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(record.appName ?? record.packageName ?? 'Details'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (record.packageName != null)
+              FutureBuilder<Application?>(
+                future: DeviceApps.getApp(record.packageName!, true),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data is ApplicationWithIcon) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: CircleAvatar(
+                        radius: 14,
+                        backgroundColor: Colors.transparent,
+                        backgroundImage: MemoryImage((snapshot.data as ApplicationWithIcon).icon),
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+            Flexible(
+              child: Text(
+                record.appName ?? record.packageName ?? 'Details',
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [

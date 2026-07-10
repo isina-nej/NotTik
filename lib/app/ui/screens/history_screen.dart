@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nottik/l10n/generated/app_localizations.dart';
 import 'package:nottik/app/data/providers/history_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:device_apps/device_apps.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
@@ -165,16 +166,27 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
                   padding: const EdgeInsets.all(0),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                      child: Text(
-                        firstLetter,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
+                    leading: FutureBuilder<Application?>(
+                      future: record.packageName != null ? DeviceApps.getApp(record.packageName!, true) : Future.value(null),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data is ApplicationWithIcon) {
+                          return CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            backgroundImage: MemoryImage((snapshot.data as ApplicationWithIcon).icon),
+                          );
+                        }
+                        return CircleAvatar(
+                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          child: Text(
+                            firstLetter,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
