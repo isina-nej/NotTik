@@ -146,6 +146,24 @@ abstract class AppLocalizations {
   /// **'جستجو...'**
   String get searchHint;
 
+  /// No description provided for @all.
+  ///
+  /// In fa, this message translates to:
+  /// **'همه'**
+  String get all;
+
+  /// No description provided for @apps.
+  ///
+  /// In fa, this message translates to:
+  /// **'برنامه‌ها'**
+  String get apps;
+
+  /// No description provided for @people.
+  ///
+  /// In fa, this message translates to:
+  /// **'اشخاص'**
+  String get people;
+
   /// No description provided for @loadMore.
   ///
   /// In fa, this message translates to:

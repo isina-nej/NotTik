@@ -34,6 +34,15 @@ class AppLocalizationsFa extends AppLocalizations {
   String get searchHint => 'جستجو...';
 
   @override
+  String get all => 'همه';
+
+  @override
+  String get apps => 'برنامه‌ها';
+
+  @override
+  String get people => 'اشخاص';
+
+  @override
   String get loadMore => 'بارگذاری بیشتر';
 
   @override

@@ -43,7 +43,7 @@ void main() {
     await tester.pumpWidget(container);
     await tester.pumpAndSettle();
     expect(find.byType(TextField), findsOneWidget); // Found the search bar
-    expect(find.text('All'), findsOneWidget); // Found the new TabBar
+    expect(find.text('همه'), findsOneWidget); // Found the new TabBar
     // Since history has no items, we should see the empty icon
     expect(find.byIcon(Icons.notifications_off_outlined), findsOneWidget);
   });

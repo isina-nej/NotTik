@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nottik/l10n/generated/app_localizations.dart';
 import 'package:nottik/app/data/providers/history_provider.dart';
+import 'package:intl/intl.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
@@ -71,10 +72,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
               ),
               TabBar(
                 controller: _tabController,
-                tabs: const [
-                  Tab(text: 'All'),
-                  Tab(text: 'Apps'),
-                  Tab(text: 'People'),
+                tabs: [
+                  Tab(text: l10n.all),
+                  Tab(text: l10n.apps),
+                  Tab(text: l10n.people),
                 ],
               ),
             ],
@@ -148,8 +149,15 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
               
               final record = filteredRecords[index];
               final titleText = record.senderName != null 
-                  ? '${record.senderName} (${record.appName ?? record.packageName})'
+                  ? record.senderName!
                   : (record.appName ?? record.packageName ?? 'Unknown');
+                  
+              final appSubtitle = record.senderName != null 
+                  ? (record.appName ?? record.packageName ?? '')
+                  : '';
+                  
+              final timeFormatted = DateFormat.Hm().format(DateTime.fromMillisecondsSinceEpoch(record.postTime ?? 0));
+              final firstLetter = titleText.isNotEmpty ? titleText[0].toUpperCase() : '?';
               
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
@@ -159,16 +167,45 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     leading: CircleAvatar(
                       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                      child: Icon(Icons.notifications_active_outlined, 
-                          color: Theme.of(context).colorScheme.onPrimaryContainer),
+                      child: Text(
+                        firstLetter,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
-                    title: Text(
-                      titleText,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            titleText,
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          timeFormatted,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                    subtitle: Text(
-                      'Time: \${DateTime.fromMillisecondsSinceEpoch(record.postTime ?? 0)}',
-                    ),
+                    subtitle: appSubtitle.isNotEmpty 
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              appSubtitle,
+                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                          )
+                        : null,
                     onTap: () {
                       context.push('/detail', extra: record);
                     },

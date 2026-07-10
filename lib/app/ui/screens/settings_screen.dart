@@ -19,94 +19,100 @@ class SettingsScreen extends ConsumerWidget {
     
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.settingsTitle),
+        title: Text(l10n.settingsTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, right: 16.0),
+            child: Text(
+              l10n.generalSettings.toUpperCase(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
           GlassmorphismCard(
+            padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.generalSettings,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.language,
+                  iconColor: Colors.blue,
+                  title: l10n.language,
+                  subtitle: locale.languageCode == 'fa' ? 'فارسی' : 'English',
+                  onTap: () => _showLanguageDialog(context, ref, locale),
                 ),
-                const SizedBox(height: 8),
-                ListTile(
-                  leading: const Icon(Icons.language),
-                  title: Text(l10n.language),
-                  subtitle: Text(locale.languageCode == 'fa' ? 'فارسی' : 'English'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    _showLanguageDialog(context, ref, locale);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.dark_mode),
-                  title: Text(l10n.theme),
-                  subtitle: Text(_getThemeText(themeMode, l10n)),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    _showThemeDialog(context, ref, themeMode, l10n);
-                  },
+                const Divider(height: 1, indent: 56),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.dark_mode,
+                  iconColor: Colors.deepPurple,
+                  title: l10n.theme,
+                  subtitle: _getThemeText(themeMode, l10n),
+                  onTap: () => _showThemeDialog(context, ref, themeMode, l10n),
                 ),
               ],
             ),
           ),
           
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, right: 16.0),
+            child: Text(
+              l10n.dataAndStorage.toUpperCase(),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
           GlassmorphismCard(
+            padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.dataAndStorage,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.auto_delete,
+                  iconColor: Colors.orange,
+                  title: l10n.autoCleanup,
+                  subtitle: '۳۰ روز',
+                  onTap: () {},
                 ),
-                const SizedBox(height: 8),
-                ListTile(
-                  leading: const Icon(Icons.auto_delete_outlined),
-                  title: Text(l10n.autoCleanup),
-                  subtitle: const Text('۳۰ روز'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // TODO: Retention days dialog
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.download_outlined),
-                  title: Text(l10n.exportTitle),
-                  subtitle: Text(l10n.exportDesc),
+                const Divider(height: 1, indent: 56),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.file_download,
+                  iconColor: Colors.green,
+                  title: l10n.exportTitle,
                   onTap: () {
                     final bridge = NotificationBridge();
                     bridge.exportData('json');
                   },
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.backup_outlined),
-                  title: Text(l10n.backupTitle),
-                  subtitle: Text(l10n.backupDesc),
+                const Divider(height: 1, indent: 56),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.archive,
+                  iconColor: Colors.red,
+                  title: l10n.backupTitle,
                   onTap: () {
                     final bridge = NotificationBridge();
                     bridge.exportData('zip');
                   },
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.bug_report_outlined),
-                  title: Text(l10n.logsTitle),
-                  subtitle: Text(l10n.logsDesc),
+                const Divider(height: 1, indent: 56),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.bug_report,
+                  iconColor: Colors.teal,
+                  title: l10n.logsTitle,
                   onTap: () async {
                     try {
                       final files = await AppLogger.getLogFiles();
@@ -135,11 +141,37 @@ class SettingsScreen extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.5,
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSettingsTile({
+    required BuildContext context,
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: iconColor,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, color: Colors.white, size: 20),
+      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      subtitle: subtitle != null ? Text(subtitle) : null,
+      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+      onTap: onTap,
     );
   }
 
