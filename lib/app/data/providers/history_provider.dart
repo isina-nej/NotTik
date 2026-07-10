@@ -37,10 +37,12 @@ class NotificationHistory extends _$NotificationHistory {
 
   Future<void> loadMore() async {
     if (state.isLoading || state.hasError) return;
-
-    final currentList = state.valueOrNull ?? [];
-    state = const AsyncLoading();
-
+    
+    final currentList = state.value ?? [];
+    
+    // Instead of completely wiping the state with AsyncLoading, use isRefreshing to preserve previous data while fetching
+    state = AsyncLoading<List<NativeNotificationRecord>>();
+    
     try {
       final newItems = await _fetchPage(currentList.length);
       state = AsyncData([...currentList, ...newItems]);

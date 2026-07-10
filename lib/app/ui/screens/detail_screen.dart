@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
@@ -50,6 +51,15 @@ class DetailScreen extends ConsumerWidget {
                           style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
+                        if (record.senderName != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            'Sender: ${record.senderName}',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ],
                         if (record.groupKey != null) ...[
                           const SizedBox(height: 4),
                           Text(
@@ -111,6 +121,21 @@ class DetailScreen extends ConsumerWidget {
                               ],
                             ),
                             const SizedBox(height: 8),
+                            if (rev.mediaPath != null && File(rev.mediaPath!).existsSync()) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.file(
+                                    File(rev.mediaPath!),
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                            ],
                             if (rev.title != null && rev.title!.isNotEmpty)
                               Text(
                                 rev.title!,

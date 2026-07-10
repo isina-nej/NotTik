@@ -75,5 +75,8 @@ data class NotificationRevision(
     val bigPicturePath: String?,
     
     @ColumnInfo(name = "app_icon_path")
-    val appIconPath: String?
+    val appIconPath: String?,
+    
+    @ColumnInfo(name = "media_path")
+    val mediaPath: String? = null
 )

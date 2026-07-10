@@ -42,9 +42,10 @@ void main() {
     );
     await tester.pumpWidget(container);
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
-    // Since history has no items, we should see the empty text
-    expect(find.text('هیچ نوتیفیکیشنی یافت نشد.'), findsOneWidget);
+    expect(find.byType(TextField), findsOneWidget); // Found the search bar
+    expect(find.text('All'), findsOneWidget); // Found the new TabBar
+    // Since history has no items, we should see the empty icon
+    expect(find.byIcon(Icons.notifications_off_outlined), findsOneWidget);
   });
 }
 

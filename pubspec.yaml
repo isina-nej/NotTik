@@ -34,12 +34,12 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.6.1
-  riverpod_annotation: ^2.6.1
+  flutter_riverpod: ^3.1.0
+  riverpod_annotation: ^4.0.0
   go_router: ^17.3.0
   intl: any
   path_provider: ^2.1.6
-  pigeon: ^24.2.1
+  pigeon: ^26.3.2
   flutter_localizations:
     sdk: flutter
   share_plus: ^13.2.0
@@ -56,9 +56,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   build_runner: ^2.5.4
-  custom_lint: ^0.7.6
-  riverpod_generator: ^2.6.5
-  riverpod_lint: ^2.6.5
+  custom_lint: ^0.8.1
+  riverpod_generator: ^4.0.0+1
+  riverpod_lint: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -88,6 +88,14 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Vazirmatn
+      fonts:
+        - asset: assets/fonts/Vazirmatn/Vazirmatn-Regular.ttf
+        - asset: assets/fonts/Vazirmatn/Vazirmatn-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Vazirmatn/Vazirmatn-Bold.ttf
+          weight: 700
   # fonts:
   #   - family: Schyler
   #     fonts:

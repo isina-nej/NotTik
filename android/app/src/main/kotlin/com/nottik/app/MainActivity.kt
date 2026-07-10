@@ -115,7 +115,7 @@ class MainActivity : FlutterActivity(), NotificationBridge {
                             removalReason = it.removalReason?.toLong()
                         )
                     },
-                    hasMore = records.size == limit.toInt()
+                    hasMore = records.size >= limit.toInt() // Fix the hasMore logic here
                 )
                 callback(Result.success(result))
             } catch (e: Exception) {
@@ -190,8 +190,9 @@ class MainActivity : FlutterActivity(), NotificationBridge {
                         progressMax = rev.progressMax.toLong(),
                         progressValue = rev.progressValue.toLong(),
                         progressIndeterminate = rev.progressIndeterminate,
-                        category = rev.category
-                    )
+                        category = rev.category,
+                        mediaPath = rev.mediaPath
+                        )
                 }))
             } catch (e: Exception) {
                 callback(Result.failure(e))

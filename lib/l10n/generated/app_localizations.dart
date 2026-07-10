@@ -131,7 +131,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptyHistory.
   ///
   /// In fa, this message translates to:
-  /// **'هنوز هیچ اعلانی دریافت نشده است.'**
+  /// **'هیچ نوتیفیکیشنی یافت نشد.'**
   String get emptyHistory;
 
   /// No description provided for @settingsTitle.
@@ -139,6 +139,108 @@ abstract class AppLocalizations {
   /// In fa, this message translates to:
   /// **'تنظیمات'**
   String get settingsTitle;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In fa, this message translates to:
+  /// **'جستجو...'**
+  String get searchHint;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In fa, this message translates to:
+  /// **'بارگذاری بیشتر'**
+  String get loadMore;
+
+  /// No description provided for @retry.
+  ///
+  /// In fa, this message translates to:
+  /// **'تلاش مجدد'**
+  String get retry;
+
+  /// No description provided for @appsTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'برنامه‌ها'**
+  String get appsTitle;
+
+  /// No description provided for @emptyApps.
+  ///
+  /// In fa, this message translates to:
+  /// **'هنوز هیچ برنامه‌ای ثبت نشده است.'**
+  String get emptyApps;
+
+  /// No description provided for @generalSettings.
+  ///
+  /// In fa, this message translates to:
+  /// **'عمومی'**
+  String get generalSettings;
+
+  /// No description provided for @language.
+  ///
+  /// In fa, this message translates to:
+  /// **'زبان'**
+  String get language;
+
+  /// No description provided for @theme.
+  ///
+  /// In fa, this message translates to:
+  /// **'پوسته (تم)'**
+  String get theme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In fa, this message translates to:
+  /// **'سیستم'**
+  String get themeSystem;
+
+  /// No description provided for @dataAndStorage.
+  ///
+  /// In fa, this message translates to:
+  /// **'داده‌ها و حافظه'**
+  String get dataAndStorage;
+
+  /// No description provided for @autoCleanup.
+  ///
+  /// In fa, this message translates to:
+  /// **'پاکسازی خودکار (Retention)'**
+  String get autoCleanup;
+
+  /// No description provided for @exportTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'خروجی گرفتن (Export)'**
+  String get exportTitle;
+
+  /// No description provided for @exportDesc.
+  ///
+  /// In fa, this message translates to:
+  /// **'دریافت فایل JSON'**
+  String get exportDesc;
+
+  /// No description provided for @backupTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'بکاپ و بازگردانی'**
+  String get backupTitle;
+
+  /// No description provided for @backupDesc.
+  ///
+  /// In fa, this message translates to:
+  /// **'ذخیره دیتابیس در فایل ZIP'**
+  String get backupDesc;
+
+  /// No description provided for @logsTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'دریافت فایل‌های لاگ'**
+  String get logsTitle;
+
+  /// No description provided for @logsDesc.
+  ///
+  /// In fa, this message translates to:
+  /// **'اشتراک‌گذاری گزارش خطاهای سیستم'**
+  String get logsDesc;
 }
 
 class _AppLocalizationsDelegate

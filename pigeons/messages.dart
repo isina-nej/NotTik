@@ -27,6 +27,7 @@ class NativeNotificationRecord {
   bool? isGroupSummary;
   bool? isRemoved;
   int? removalReason;
+  String? senderName;
 }
 
 class NativeNotificationRevision {
@@ -45,6 +46,7 @@ class NativeNotificationRevision {
   int? progressValue;
   bool? progressIndeterminate;
   String? category;
+  String? mediaPath;
 }
 
 class PaginatedResult {

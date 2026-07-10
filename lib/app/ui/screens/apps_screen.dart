@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nottik/app/data/providers/apps_provider.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
+import 'package:nottik/l10n/generated/app_localizations.dart';
 
 class AppsScreen extends ConsumerWidget {
   const AppsScreen({super.key});
@@ -9,17 +10,16 @@ class AppsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appsAsync = ref.watch(appsManagementProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('برنامه‌ها'), // Localize later
+        title: Text(l10n.appsTitle),
       ),
       body: appsAsync.when(
         data: (apps) {
           if (apps.isEmpty) {
-            return const Center(
-              child: Text('هنوز هیچ برنامه‌ای ثبت نشده است.'),
-            );
+            return Center(child: Text(l10n.emptyApps));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -35,23 +35,13 @@ class AppsScreen extends ConsumerWidget {
                     subtitle: Text(app.packageName ?? ''),
                     value: app.isLoggingEnabled ?? true,
                     onChanged: (val) {
-                      ref
-                          .read(appsManagementProvider.notifier)
-                          .toggleLogging(
-                            app.packageName!,
-                            app.isLoggingEnabled ?? true,
-                          );
+                      ref.read(appsManagementProvider.notifier)
+                          .toggleLogging(app.packageName!, app.isLoggingEnabled ?? true);
                     },
                     secondary: CircleAvatar(
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.secondaryContainer,
-                      child: Icon(
-                        Icons.android,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSecondaryContainer,
-                      ),
+                      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                      child: Icon(Icons.android, 
+                          color: Theme.of(context).colorScheme.onSecondaryContainer),
                     ),
                   ),
                 ),

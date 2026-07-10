@@ -11,7 +11,7 @@ import 'package:nottik/app/bridge/pigeon.dart';
 part 'app_router.g.dart';
 
 @riverpod
-GoRouter appRouter(AppRouterRef ref) {
+GoRouter appRouter(Ref ref) {
   final isConnected = ref.watch(listenerConnectedProvider);
 
   return GoRouter(
@@ -19,7 +19,7 @@ GoRouter appRouter(AppRouterRef ref) {
     redirect: (context, state) {
       if (isConnected.isLoading) return null;
 
-      final connected = isConnected.valueOrNull ?? false;
+      final connected = isConnected.value ?? false;
       final isGoingToOnboarding = state.matchedLocation == '/onboarding';
 
       if (!connected && !isGoingToOnboarding) {

@@ -10,8 +10,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
-    with WidgetsBindingObserver {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
@@ -26,7 +25,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // When returning to app, check if permission was granted
     if (state == AppLifecycleState.resumed) {
       ref.read(listenerConnectedProvider.notifier).checkConnection();
     }

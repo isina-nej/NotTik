@@ -25,8 +25,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get historyTitle => 'Notification History';
 
   @override
-  String get emptyHistory => 'No notifications captured yet.';
+  String get emptyHistory => 'No notifications found.';
 
   @override
   String get settingsTitle => 'Settings';
+
+  @override
+  String get searchHint => 'Search...';
+
+  @override
+  String get loadMore => 'Load More';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get appsTitle => 'Apps';
+
+  @override
+  String get emptyApps => 'No apps registered yet.';
+
+  @override
+  String get generalSettings => 'General';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get dataAndStorage => 'Data & Storage';
+
+  @override
+  String get autoCleanup => 'Auto Cleanup (Retention)';
+
+  @override
+  String get exportTitle => 'Export';
+
+  @override
+  String get exportDesc => 'Get JSON file';
+
+  @override
+  String get backupTitle => 'Backup & Restore';
+
+  @override
+  String get backupDesc => 'Save DB as ZIP';
+
+  @override
+  String get logsTitle => 'Get Log Files';
+
+  @override
+  String get logsDesc => 'Share system error reports';
 }

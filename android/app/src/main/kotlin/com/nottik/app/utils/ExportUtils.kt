@@ -28,6 +28,22 @@ object ExportUtils {
                 obj.put("package", item.packageName)
                 obj.put("app_name", item.appName)
                 obj.put("post_time", item.postTime)
+                obj.put("channel_id", item.channelId)
+                
+                // Fetch revisions for this record
+                val revisions = dao.getRevisionsByRecordId(item.id)
+                val revisionsArray = JSONArray()
+                
+                for (rev in revisions) {
+                    val revObj = JSONObject()
+                    revObj.put("title", rev.title)
+                    revObj.put("text", rev.text)
+                    revObj.put("big_text", rev.bigText)
+                    revObj.put("capture_timestamp", rev.captureTimestamp)
+                    revisionsArray.put(revObj)
+                }
+                
+                obj.put("revisions", revisionsArray)
                 jsonArray.put(obj)
             }
             

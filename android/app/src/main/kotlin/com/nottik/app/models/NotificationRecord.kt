@@ -61,5 +61,8 @@ data class NotificationRecord(
     val removalReason: Int? = null,
     
     @ColumnInfo(name = "custom_category")
-    val customCategory: String? = null
+    val customCategory: String? = null,
+    
+    @ColumnInfo(name = "sender_name")
+    val senderName: String? = null
 )

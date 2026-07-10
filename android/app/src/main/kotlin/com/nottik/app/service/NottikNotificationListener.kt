@@ -17,6 +17,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import com.nottik.app.utils.NativeLogger
 
+import com.nottik.app.utils.NotificationImageExtractor
+
 class NottikNotificationListener : NotificationListenerService() {
     private val TAG = "NottikListener"
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -101,6 +103,7 @@ class NottikNotificationListener : NotificationListenerService() {
         
         // Extract MessagingStyle messages
         var messagingMessagesStr: String? = null
+        var lastSenderName: String? = null
         try {
             val messages = extras.getParcelableArray(android.app.Notification.EXTRA_MESSAGES)
             if (messages != null && messages.isNotEmpty()) {
@@ -108,16 +111,27 @@ class NottikNotificationListener : NotificationListenerService() {
                 for (msgObj in messages) {
                     if (msgObj is android.os.Bundle) {
                         val msgJson = JSONObject()
-                        msgJson.put("text", msgObj.getCharSequence("text")?.toString())
+                        val textStr = msgObj.getCharSequence("text")?.toString()
+                        val senderStr = msgObj.getCharSequence("sender")?.toString()
+                        msgJson.put("text", textStr)
                         msgJson.put("time", msgObj.getLong("time"))
-                        msgJson.put("sender", msgObj.getCharSequence("sender")?.toString())
+                        msgJson.put("sender", senderStr)
                         jsonArray.put(msgJson)
+                        
+                        if (senderStr != null) {
+                            lastSenderName = senderStr
+                        }
                     }
                 }
                 messagingMessagesStr = jsonArray.toString()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to extract messages", e)
+        }
+        
+        // If it's not a MessagingStyle or doesn't have a specific sender, fallback to title
+        if (lastSenderName == null) {
+            lastSenderName = title
         }
 
         // Extract Images
@@ -179,7 +193,8 @@ class NottikNotificationListener : NotificationListenerService() {
                 isOngoing = sbn.isOngoing,
                 isClearable = sbn.isClearable,
                 isGroupSummary = notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0,
-                isRemoved = false
+                isRemoved = false,
+                senderName = lastSenderName
             )
             recordId = dao.insertRecord(record)
         } else {
@@ -212,7 +227,8 @@ class NottikNotificationListener : NotificationListenerService() {
             category = notification.category,
             largeIconPath = largeIconPath,
             bigPicturePath = bigPicturePath,
-            appIconPath = null
+            appIconPath = null,
+            mediaPath = bigPicturePath ?: largeIconPath // Store the primary available media
         )
         
         dao.insertRevision(revision)

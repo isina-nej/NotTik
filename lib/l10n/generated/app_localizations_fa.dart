@@ -25,8 +25,59 @@ class AppLocalizationsFa extends AppLocalizations {
   String get historyTitle => 'تاریخچه اعلانات';
 
   @override
-  String get emptyHistory => 'هنوز هیچ اعلانی دریافت نشده است.';
+  String get emptyHistory => 'هیچ نوتیفیکیشنی یافت نشد.';
 
   @override
   String get settingsTitle => 'تنظیمات';
+
+  @override
+  String get searchHint => 'جستجو...';
+
+  @override
+  String get loadMore => 'بارگذاری بیشتر';
+
+  @override
+  String get retry => 'تلاش مجدد';
+
+  @override
+  String get appsTitle => 'برنامه‌ها';
+
+  @override
+  String get emptyApps => 'هنوز هیچ برنامه‌ای ثبت نشده است.';
+
+  @override
+  String get generalSettings => 'عمومی';
+
+  @override
+  String get language => 'زبان';
+
+  @override
+  String get theme => 'پوسته (تم)';
+
+  @override
+  String get themeSystem => 'سیستم';
+
+  @override
+  String get dataAndStorage => 'داده‌ها و حافظه';
+
+  @override
+  String get autoCleanup => 'پاکسازی خودکار (Retention)';
+
+  @override
+  String get exportTitle => 'خروجی گرفتن (Export)';
+
+  @override
+  String get exportDesc => 'دریافت فایل JSON';
+
+  @override
+  String get backupTitle => 'بکاپ و بازگردانی';
+
+  @override
+  String get backupDesc => 'ذخیره دیتابیس در فایل ZIP';
+
+  @override
+  String get logsTitle => 'دریافت فایل‌های لاگ';
+
+  @override
+  String get logsDesc => 'اشتراک‌گذاری گزارش خطاهای سیستم';
 }

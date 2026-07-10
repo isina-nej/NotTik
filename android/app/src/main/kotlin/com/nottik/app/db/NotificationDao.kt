@@ -2,13 +2,16 @@ package com.nottik.app.db
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nottik.app.models.NotificationRecord
 import com.nottik.app.models.NotificationRevision
 
 @Dao
 interface NotificationDao {
-    @Insert
+    data class NotificationRecordId(val id: Long)
+    
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecord(record: NotificationRecord): Long
 
     @Insert
@@ -38,11 +41,23 @@ interface NotificationDao {
     @Query("SELECT * FROM notification_revisions WHERE parent_record_id = :recordId ORDER BY capture_timestamp DESC")
     suspend fun getRevisionsByRecordId(recordId: Long): List<NotificationRevision>
 
-    @Query("DELETE FROM notification_records")
-    suspend fun deleteAll()
+    @Query("SELECT id FROM notification_records WHERE last_update_time < :cutoffTime AND package_name = :packageName")
+    suspend fun getRecordsOlderThanForPackage(cutoffTime: Long, packageName: String): List<NotificationRecordId>
+
+    @Query("DELETE FROM notification_records WHERE last_update_time < :cutoffTime AND package_name = :packageName")
+    suspend fun deleteRecordsOlderThanForPackage(cutoffTime: Long, packageName: String)
+
+    @Query("SELECT id FROM notification_records WHERE last_update_time < :cutoffTime AND package_name NOT IN (SELECT package_name FROM app_metadata WHERE retention_days IS NOT NULL)")
+    suspend fun getRecordsOlderThanDefault(cutoffTime: Long): List<NotificationRecordId>
 
     @Query("DELETE FROM notification_records WHERE last_update_time < :cutoffTime AND package_name NOT IN (SELECT package_name FROM app_metadata WHERE retention_days IS NOT NULL)")
-    suspend fun deleteOldRecords(cutoffTime: Long)
+    suspend fun deleteRecordsOlderThanDefault(cutoffTime: Long)
+    
+    @Query("SELECT media_path FROM notification_revisions WHERE parent_record_id IN (:recordIds) AND media_path IS NOT NULL")
+    suspend fun getMediaPathsForRecords(recordIds: List<Long>): List<String?>
+    
+    @Query("SELECT media_path FROM notification_revisions WHERE media_path IS NOT NULL")
+    suspend fun getAllMediaPaths(): List<String?>
 
     @Query("DELETE FROM notification_records WHERE package_name = :packageName AND last_update_time < :cutoffTime")
     suspend fun deleteOldRecordsForApp(packageName: String, cutoffTime: Long)
