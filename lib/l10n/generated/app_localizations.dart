@@ -259,6 +259,60 @@ abstract class AppLocalizations {
   /// In fa, this message translates to:
   /// **'اشتراک‌گذاری گزارش خطاهای سیستم'**
   String get logsDesc;
+
+  /// No description provided for @noLogsAvailable.
+  ///
+  /// In fa, this message translates to:
+  /// **'هیچ لاگی ثبت نشده است.'**
+  String get noLogsAvailable;
+
+  /// No description provided for @selectLanguageTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'انتخاب زبان / Language'**
+  String get selectLanguageTitle;
+
+  /// No description provided for @persian.
+  ///
+  /// In fa, this message translates to:
+  /// **'فارسی'**
+  String get persian;
+
+  /// No description provided for @english.
+  ///
+  /// In fa, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @light.
+  ///
+  /// In fa, this message translates to:
+  /// **'روشن'**
+  String get light;
+
+  /// No description provided for @dark.
+  ///
+  /// In fa, this message translates to:
+  /// **'تاریک'**
+  String get dark;
+
+  /// No description provided for @emptyFilteredHistory.
+  ///
+  /// In fa, this message translates to:
+  /// **'هیچ نوتیفیکیشنی در این دسته‌بندی یافت نشد.'**
+  String get emptyFilteredHistory;
+
+  /// No description provided for @noRevisionsFound.
+  ///
+  /// In fa, this message translates to:
+  /// **'هیچ تغییراتی یافت نشد.'**
+  String get noRevisionsFound;
+
+  /// No description provided for @error.
+  ///
+  /// In fa, this message translates to:
+  /// **'خطا'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate

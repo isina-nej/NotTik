@@ -115,7 +115,7 @@ class MainActivity : FlutterActivity(), NotificationBridge {
                             removalReason = it.removalReason?.toLong()
                         )
                     },
-                    hasMore = records.size >= limit.toInt() // Fix the hasMore logic here
+                    hasMore = records.size == limit.toInt()
                 )
                 callback(Result.success(result))
             } catch (e: Exception) {

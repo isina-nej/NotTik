@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nottik/l10n/generated/app_localizations.dart';
 import 'package:nottik/main.dart';
 import 'package:nottik/app/data/providers/listener_provider.dart';
 import 'package:nottik/app/data/providers/history_provider.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 
+
+
 void main() {
   testWidgets('NotTik App launches and shows onboarding if no connection', (
     WidgetTester tester,
   ) async {
-    final container = ProviderScope(
-      overrides: [
-        listenerConnectedProvider.overrideWith(
-          () => MockListenerConnectedFalse(),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          listenerConnectedProvider.overrideWith(
+            () => MockListenerConnectedFalse(),
+          ),
+          notificationHistoryProvider.overrideWith(
+            () => MockNotificationHistory(),
+          ),
+        ],
+        child: const MaterialApp(
+          home: NotTikApp(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
         ),
-        notificationHistoryProvider.overrideWith(
-          () => MockNotificationHistory(),
-        ),
-      ],
-      child: const NotTikApp(),
+      ),
     );
-    await tester.pumpWidget(container);
     await tester.pumpAndSettle();
     expect(find.byIcon(Icons.notifications_off_outlined), findsOneWidget);
   });
@@ -29,18 +37,23 @@ void main() {
   testWidgets('NotTik App launches History if connection is present', (
     WidgetTester tester,
   ) async {
-    final container = ProviderScope(
-      overrides: [
-        listenerConnectedProvider.overrideWith(
-          () => MockListenerConnectedTrue(),
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          listenerConnectedProvider.overrideWith(
+            () => MockListenerConnectedTrue(),
+          ),
+          notificationHistoryProvider.overrideWith(
+            () => MockNotificationHistory(),
+          ),
+        ],
+        child: const MaterialApp(
+          home: NotTikApp(),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
         ),
-        notificationHistoryProvider.overrideWith(
-          () => MockNotificationHistory(),
-        ),
-      ],
-      child: const NotTikApp(),
+      ),
     );
-    await tester.pumpWidget(container);
     await tester.pumpAndSettle();
     expect(find.byType(TextField), findsOneWidget); // Found the search bar
     expect(find.text('همه'), findsOneWidget); // Found the new TabBar

@@ -89,4 +89,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logsDesc => 'Share system error reports';
+
+  @override
+  String get noLogsAvailable => 'No logs available.';
+
+  @override
+  String get selectLanguageTitle => 'Select Language';
+
+  @override
+  String get persian => 'Persian';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get light => 'Light';
+
+  @override
+  String get dark => 'Dark';
+
+  @override
+  String get emptyFilteredHistory =>
+      'No matching notifications in this category.';
+
+  @override
+  String get noRevisionsFound => 'No revisions found.';
+
+  @override
+  String get error => 'Error';
 }

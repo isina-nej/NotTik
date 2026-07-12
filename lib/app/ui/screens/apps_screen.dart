@@ -50,7 +50,7 @@ class AppsScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('خطا: $err')),
+        error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
       ),
     );
   }

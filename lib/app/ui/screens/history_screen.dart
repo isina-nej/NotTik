@@ -125,7 +125,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
         }
 
         if (filteredRecords.isEmpty) {
-          return const Center(child: Text('No matching notifications in this category.'));
+          return Center(child: Text(l10n.emptyFilteredHistory));
         }
 
         return RefreshIndicator(
@@ -239,7 +239,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
             const SizedBox(height: 8),
             FilledButton(
               onPressed: () => ref.read(notificationHistoryProvider.notifier).refresh(),
-              child: const Text('تلاش مجدد'),
+              child: Text(l10n.retry),
             ),
           ],
         ),

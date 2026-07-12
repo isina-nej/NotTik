@@ -29,5 +29,14 @@
   "backupTitle": "بکاپ و بازگردانی",
   "backupDesc": "ذخیره دیتابیس در فایل ZIP",
   "logsTitle": "دریافت فایل‌های لاگ",
-  "logsDesc": "اشتراک‌گذاری گزارش خطاهای سیستم"
+  "logsDesc": "اشتراک‌گذاری گزارش خطاهای سیستم",
+  "noLogsAvailable": "هیچ لاگی ثبت نشده است.",
+  "selectLanguageTitle": "انتخاب زبان / Language",
+  "persian": "فارسی",
+  "english": "English",
+  "light": "روشن",
+  "dark": "تاریک",
+  "emptyFilteredHistory": "هیچ نوتیفیکیشنی در این دسته‌بندی یافت نشد.",
+  "noRevisionsFound": "هیچ تغییراتی یافت نشد.",
+  "error": "خطا"
 }

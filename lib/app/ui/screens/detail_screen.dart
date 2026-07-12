@@ -5,6 +5,7 @@ import 'package:device_apps/device_apps.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 import 'package:nottik/app/data/providers/detail_provider.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
+import 'package:nottik/l10n/l10n.dart';
 import 'package:intl/intl.dart';
 
 class DetailScreen extends ConsumerWidget {
@@ -110,7 +111,7 @@ class DetailScreen extends ConsumerWidget {
             child: revisionsAsync.when(
               data: (revisions) {
                 if (revisions.isEmpty) {
-                  return const Center(child: Text('هیچ تغییراتی یافت نشد.'));
+                  return Center(child: Text(l10n.noRevisionsFound));
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(
@@ -207,7 +208,7 @@ class DetailScreen extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('خطا: $err')),
+              error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
             ),
           ),
         ],

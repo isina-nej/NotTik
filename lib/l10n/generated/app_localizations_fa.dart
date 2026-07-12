@@ -89,4 +89,32 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get logsDesc => 'اشتراک‌گذاری گزارش خطاهای سیستم';
+
+  @override
+  String get noLogsAvailable => 'هیچ لاگی ثبت نشده است.';
+
+  @override
+  String get selectLanguageTitle => 'انتخاب زبان / Language';
+
+  @override
+  String get persian => 'فارسی';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get light => 'روشن';
+
+  @override
+  String get dark => 'تاریک';
+
+  @override
+  String get emptyFilteredHistory =>
+      'هیچ نوتیفیکیشنی در این دسته‌بندی یافت نشد.';
+
+  @override
+  String get noRevisionsFound => 'هیچ تغییراتی یافت نشد.';
+
+  @override
+  String get error => 'خطا';
 }

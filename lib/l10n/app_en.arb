@@ -29,5 +29,14 @@
   "backupTitle": "Backup & Restore",
   "backupDesc": "Save DB as ZIP",
   "logsTitle": "Get Log Files",
-  "logsDesc": "Share system error reports"
+  "logsDesc": "Share system error reports",
+  "noLogsAvailable": "No logs available.",
+  "selectLanguageTitle": "Select Language",
+  "persian": "Persian",
+  "english": "English",
+  "light": "Light",
+  "dark": "Dark",
+  "emptyFilteredHistory": "No matching notifications in this category.",
+  "noRevisionsFound": "No revisions found.",
+  "error": "Error"
 }

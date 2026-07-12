@@ -8,6 +8,8 @@ import 'package:nottik/l10n/generated/app_localizations.dart';
 import 'package:nottik/app/data/providers/theme_provider.dart';
 import 'package:nottik/app/data/providers/locale_provider.dart';
 
+import 'package:nottik/app/data/providers/retention_provider.dart';
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -16,6 +18,7 @@ class SettingsScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final themeMode = ref.watch(appThemeModeProvider);
     final locale = ref.watch(appLocaleProvider);
+    final retention = ref.watch(retentionSettingsProvider);
     
     return Scaffold(
       appBar: AppBar(
@@ -45,7 +48,7 @@ class SettingsScreen extends ConsumerWidget {
                   iconColor: Colors.blue,
                   title: l10n.language,
                   subtitle: locale.languageCode == 'fa' ? 'فارسی' : 'English',
-                  onTap: () => _showLanguageDialog(context, ref, locale),
+                  onTap: () => _showLanguageDialog(context, ref, locale, l10n),
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildSettingsTile(
@@ -82,8 +85,8 @@ class SettingsScreen extends ConsumerWidget {
                   icon: Icons.auto_delete,
                   iconColor: Colors.orange,
                   title: l10n.autoCleanup,
-                  subtitle: '۳۰ روز',
-                  onTap: () {},
+                  subtitle: _getRetentionText(retention, l10n),
+                  onTap: () => _showRetentionDialog(context, ref, retention, l10n),
                 ),
                 const Divider(height: 1, indent: 56),
                 _buildSettingsTile(
@@ -121,7 +124,7 @@ class SettingsScreen extends ConsumerWidget {
                         await SharePlus.instance.share(ShareParams(files: xFiles, text: 'NotTik Debug Logs'));
                       } else if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('هیچ لاگی ثبت نشده است.')),
+                          const SnackBar(content: Text('هیچ لاگی یافت نشد / No logs available')),
                         );
                       }
                     } catch (e) {
@@ -186,12 +189,12 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
-  void _showLanguageDialog(BuildContext context, WidgetRef ref, Locale currentLocale) {
+  void _showLanguageDialog(BuildContext context, WidgetRef ref, Locale currentLocale, AppLocalizations l10n) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('انتخاب زبان / Language'),
+          title: const Text('انتخاب زبان / Select Language'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -201,7 +204,7 @@ class SettingsScreen extends ConsumerWidget {
                 groupValue: currentLocale.languageCode,
                 onChanged: (value) {
                   ref.read(appLocaleProvider.notifier).setLocale(Locale(value!));
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                 },
               ),
               RadioListTile<String>(
@@ -210,7 +213,7 @@ class SettingsScreen extends ConsumerWidget {
                 groupValue: currentLocale.languageCode,
                 onChanged: (value) {
                   ref.read(appLocaleProvider.notifier).setLocale(Locale(value!));
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                 },
               ),
             ],
@@ -223,7 +226,7 @@ class SettingsScreen extends ConsumerWidget {
   void _showThemeDialog(BuildContext context, WidgetRef ref, ThemeMode currentMode, AppLocalizations l10n) {
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return AlertDialog(
           title: Text(l10n.theme),
           content: Column(
@@ -235,28 +238,66 @@ class SettingsScreen extends ConsumerWidget {
                 groupValue: currentMode,
                 onChanged: (value) {
                   ref.read(appThemeModeProvider.notifier).setTheme(value!);
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                 },
               ),
               RadioListTile<ThemeMode>(
-                title: const Text('روشن'),
+                title: const Text('روشن / Light'),
                 value: ThemeMode.light,
                 groupValue: currentMode,
                 onChanged: (value) {
                   ref.read(appThemeModeProvider.notifier).setTheme(value!);
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                 },
               ),
               RadioListTile<ThemeMode>(
-                title: const Text('تاریک'),
+                title: const Text('تاریک / Dark'),
                 value: ThemeMode.dark,
                 groupValue: currentMode,
                 onChanged: (value) {
                   ref.read(appThemeModeProvider.notifier).setTheme(value!);
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                 },
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  String _getRetentionText(RetentionPeriod period, AppLocalizations l10n) {
+    switch (period) {
+      case RetentionPeriod.days7:
+        return '۷ روز';
+      case RetentionPeriod.days30:
+        return '۳۰ روز';
+      case RetentionPeriod.days90:
+        return '۹۰ روز';
+      case RetentionPeriod.forever:
+        return 'برای همیشه';
+    }
+  }
+
+  void _showRetentionDialog(BuildContext context, WidgetRef ref, RetentionPeriod currentPeriod, AppLocalizations l10n) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(l10n.autoCleanup),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: RetentionPeriod.values.map((period) {
+              return RadioListTile<RetentionPeriod>(
+                title: Text(_getRetentionText(period, l10n)),
+                value: period,
+                groupValue: currentPeriod,
+                onChanged: (value) {
+                  ref.read(retentionSettingsProvider.notifier).set(value!);
+                  Navigator.pop(dialogContext);
+                },
+              );
+            }).toList(),
           ),
         );
       },

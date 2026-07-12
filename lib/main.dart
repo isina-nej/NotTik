@@ -7,6 +7,7 @@ import 'package:nottik/app/routing/app_router.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
 import 'package:nottik/app/utils/logger.dart';
 import 'package:nottik/l10n/generated/app_localizations.dart';
+import 'package:nottik/l10n/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,9 @@ class NotTikApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
     final themeMode = ref.watch(appThemeModeProvider);
     final locale = ref.watch(appLocaleProvider);
+
+    // Initialize l10n
+    initL10n(context);
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
