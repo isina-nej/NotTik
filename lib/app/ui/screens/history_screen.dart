@@ -163,6 +163,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> with SingleTicker
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: GlassmorphismCard(
+                  blur: 10,
                   padding: const EdgeInsets.all(0),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

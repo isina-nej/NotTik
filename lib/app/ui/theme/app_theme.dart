@@ -60,29 +60,42 @@ class GlassmorphismCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     
-    // iOS Frosted Glass colors
+    // Local variable to avoid duplication
+    final radius = borderRadius ?? BorderRadius.circular(24);
+
+    // Theme-aware glass colors
     final glassColor = isDark 
-        ? Colors.white.withOpacity(0.05) 
-        : Colors.white.withOpacity(0.6);
+        ? theme.colorScheme.surfaceContainerHigh.withValues(alpha: 0.4) 
+        : theme.colorScheme.surface.withValues(alpha: 0.6);
         
     final borderColor = isDark 
-        ? Colors.white.withOpacity(0.1) 
-        : Colors.white.withOpacity(0.4);
+        ? Colors.white.withValues(alpha: 0.1) 
+        : theme.colorScheme.primary.withValues(alpha: 0.1);
 
     return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(24), // Highly rounded corners
+      borderRadius: radius,
       child: BackdropFilter(
         filter: dart_ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
         child: Container(
           padding: padding ?? const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: glassColor,
-            borderRadius: borderRadius ?? BorderRadius.circular(24),
-            border: Border.all(
-              color: borderColor,
-              width: 1.0,
+            borderRadius: radius,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 20,
+                spreadRadius: -5,
+              )
+            ],
+            border: Border(
+              top: BorderSide(color: borderColor.withValues(alpha: isDark ? 0.2 : 0.3), width: 1.0),
+              left: BorderSide(color: borderColor.withValues(alpha: isDark ? 0.2 : 0.3), width: 1.0),
+              right: BorderSide(color: borderColor, width: 1.0),
+              bottom: BorderSide(color: borderColor, width: 1.0),
             ),
           ),
           child: child,

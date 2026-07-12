@@ -28,7 +28,7 @@ class SettingsScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16.0),
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, right: 16.0),
+            padding: const EdgeInsetsDirectional.only(start: 16.0, bottom: 8.0, end: 16.0),
             child: Text(
               l10n.generalSettings.toUpperCase(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -50,7 +50,7 @@ class SettingsScreen extends ConsumerWidget {
                   subtitle: locale.languageCode == 'fa' ? 'فارسی' : 'English',
                   onTap: () => _showLanguageDialog(context, ref, locale, l10n),
                 ),
-                const Divider(height: 1, indent: 56),
+                const Divider(height: 1),
                 _buildSettingsTile(
                   context: context,
                   icon: Icons.dark_mode,
@@ -66,7 +66,7 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, bottom: 8.0, right: 16.0),
+            padding: const EdgeInsetsDirectional.only(start: 16.0, bottom: 8.0, end: 16.0),
             child: Text(
               l10n.dataAndStorage.toUpperCase(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(

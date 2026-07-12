@@ -29,6 +29,7 @@ class AppsScreen extends ConsumerWidget {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
                 child: GlassmorphismCard(
+                  blur: 10,
                   padding: const EdgeInsets.all(4),
                   child: SwitchListTile(
                     title: Text(app.appName ?? app.packageName ?? 'Unknown'),

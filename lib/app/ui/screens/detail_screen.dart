@@ -30,7 +30,7 @@ class DetailScreen extends ConsumerWidget {
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data is ApplicationWithIcon) {
                     return Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
+                      padding: const EdgeInsetsDirectional.only(end: 8.0),
                       child: CircleAvatar(
                         radius: 14,
                         backgroundColor: Colors.transparent,
@@ -130,6 +130,7 @@ class DetailScreen extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: GlassmorphismCard(
+                        blur: 10,
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
