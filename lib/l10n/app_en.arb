@@ -7,7 +7,7 @@
   "onboardingTitle": "Welcome to NotTik",
   "onboardingDesc": "To securely save notifications offline, we need Notification Access permission.",
   "grantPermission": "Grant Permission",
-  "historyTitle": "Notification History",
+  "historyTitle": "History",
   "emptyHistory": "No notifications found.",
   "settingsTitle": "Settings",
   "searchHint": "Search...",
@@ -23,7 +23,7 @@
   "theme": "Theme",
   "themeSystem": "System",
   "dataAndStorage": "Data & Storage",
-  "autoCleanup": "Auto Cleanup (Retention)",
+  "autoCleanup": "Auto Cleanup",
   "exportTitle": "Export",
   "exportDesc": "Get JSON file",
   "backupTitle": "Backup & Restore",
@@ -38,5 +38,22 @@
   "dark": "Dark",
   "emptyFilteredHistory": "No matching notifications in this category.",
   "noRevisionsFound": "No revisions found.",
-  "error": "Error"
+  "error": "Error",
+  "senderLabel": "Sender",
+  "groupLabel": "Group",
+  "historyLoadError": "Failed to load data",
+  "privacyTagline": "Privacy-first and fully offline",
+  "appVersion": "Version {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownApp": "Unknown",
+  "retentionDays7": "7 days",
+  "retentionDays30": "30 days",
+  "retentionDays90": "90 days",
+  "retentionForever": "Forever"
 }

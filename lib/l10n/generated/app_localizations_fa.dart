@@ -22,7 +22,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get grantPermission => 'اعطای دسترسی';
 
   @override
-  String get historyTitle => 'تاریخچه اعلانات';
+  String get historyTitle => 'تاریخچه';
 
   @override
   String get emptyHistory => 'هیچ نوتیفیکیشنی یافت نشد.';
@@ -61,7 +61,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get language => 'زبان';
 
   @override
-  String get theme => 'پوسته (تم)';
+  String get theme => 'پوسته';
 
   @override
   String get themeSystem => 'سیستم';
@@ -70,19 +70,19 @@ class AppLocalizationsFa extends AppLocalizations {
   String get dataAndStorage => 'داده‌ها و حافظه';
 
   @override
-  String get autoCleanup => 'پاکسازی خودکار (Retention)';
+  String get autoCleanup => 'پاکسازی خودکار';
 
   @override
-  String get exportTitle => 'خروجی گرفتن (Export)';
+  String get exportTitle => 'خروجی گرفتن';
 
   @override
-  String get exportDesc => 'دریافت فایل JSON';
+  String get exportDesc => 'دریافت فایل جیسون';
 
   @override
-  String get backupTitle => 'بکاپ و بازگردانی';
+  String get backupTitle => 'پشتیبان و بازگردانی';
 
   @override
-  String get backupDesc => 'ذخیره دیتابیس در فایل ZIP';
+  String get backupDesc => 'ذخیره پایگاه داده در فایل زیپ';
 
   @override
   String get logsTitle => 'دریافت فایل‌های لاگ';
@@ -94,7 +94,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get noLogsAvailable => 'هیچ لاگی ثبت نشده است.';
 
   @override
-  String get selectLanguageTitle => 'انتخاب زبان / Language';
+  String get selectLanguageTitle => 'انتخاب زبان';
 
   @override
   String get persian => 'فارسی';
@@ -117,4 +117,36 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get error => 'خطا';
+
+  @override
+  String get senderLabel => 'فرستنده';
+
+  @override
+  String get groupLabel => 'گروه';
+
+  @override
+  String get historyLoadError => 'خطا در دریافت اطلاعات';
+
+  @override
+  String get privacyTagline => 'مبتنی بر حریم خصوصی و کاملاً آفلاین';
+
+  @override
+  String appVersion(String version) {
+    return 'نسخه $version';
+  }
+
+  @override
+  String get unknownApp => 'ناشناس';
+
+  @override
+  String get retentionDays7 => '۷ روز';
+
+  @override
+  String get retentionDays30 => '۳۰ روز';
+
+  @override
+  String get retentionDays90 => '۹۰ روز';
+
+  @override
+  String get retentionForever => 'برای همیشه';
 }

@@ -125,7 +125,7 @@ abstract class AppLocalizations {
   /// No description provided for @historyTitle.
   ///
   /// In fa, this message translates to:
-  /// **'تاریخچه اعلانات'**
+  /// **'تاریخچه'**
   String get historyTitle;
 
   /// No description provided for @emptyHistory.
@@ -203,7 +203,7 @@ abstract class AppLocalizations {
   /// No description provided for @theme.
   ///
   /// In fa, this message translates to:
-  /// **'پوسته (تم)'**
+  /// **'پوسته'**
   String get theme;
 
   /// No description provided for @themeSystem.
@@ -221,31 +221,31 @@ abstract class AppLocalizations {
   /// No description provided for @autoCleanup.
   ///
   /// In fa, this message translates to:
-  /// **'پاکسازی خودکار (Retention)'**
+  /// **'پاکسازی خودکار'**
   String get autoCleanup;
 
   /// No description provided for @exportTitle.
   ///
   /// In fa, this message translates to:
-  /// **'خروجی گرفتن (Export)'**
+  /// **'خروجی گرفتن'**
   String get exportTitle;
 
   /// No description provided for @exportDesc.
   ///
   /// In fa, this message translates to:
-  /// **'دریافت فایل JSON'**
+  /// **'دریافت فایل جیسون'**
   String get exportDesc;
 
   /// No description provided for @backupTitle.
   ///
   /// In fa, this message translates to:
-  /// **'بکاپ و بازگردانی'**
+  /// **'پشتیبان و بازگردانی'**
   String get backupTitle;
 
   /// No description provided for @backupDesc.
   ///
   /// In fa, this message translates to:
-  /// **'ذخیره دیتابیس در فایل ZIP'**
+  /// **'ذخیره پایگاه داده در فایل زیپ'**
   String get backupDesc;
 
   /// No description provided for @logsTitle.
@@ -269,7 +269,7 @@ abstract class AppLocalizations {
   /// No description provided for @selectLanguageTitle.
   ///
   /// In fa, this message translates to:
-  /// **'انتخاب زبان / Language'**
+  /// **'انتخاب زبان'**
   String get selectLanguageTitle;
 
   /// No description provided for @persian.
@@ -313,6 +313,66 @@ abstract class AppLocalizations {
   /// In fa, this message translates to:
   /// **'خطا'**
   String get error;
+
+  /// No description provided for @senderLabel.
+  ///
+  /// In fa, this message translates to:
+  /// **'فرستنده'**
+  String get senderLabel;
+
+  /// No description provided for @groupLabel.
+  ///
+  /// In fa, this message translates to:
+  /// **'گروه'**
+  String get groupLabel;
+
+  /// No description provided for @historyLoadError.
+  ///
+  /// In fa, this message translates to:
+  /// **'خطا در دریافت اطلاعات'**
+  String get historyLoadError;
+
+  /// No description provided for @privacyTagline.
+  ///
+  /// In fa, this message translates to:
+  /// **'مبتنی بر حریم خصوصی و کاملاً آفلاین'**
+  String get privacyTagline;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In fa, this message translates to:
+  /// **'نسخه {version}'**
+  String appVersion(String version);
+
+  /// No description provided for @unknownApp.
+  ///
+  /// In fa, this message translates to:
+  /// **'ناشناس'**
+  String get unknownApp;
+
+  /// No description provided for @retentionDays7.
+  ///
+  /// In fa, this message translates to:
+  /// **'۷ روز'**
+  String get retentionDays7;
+
+  /// No description provided for @retentionDays30.
+  ///
+  /// In fa, this message translates to:
+  /// **'۳۰ روز'**
+  String get retentionDays30;
+
+  /// No description provided for @retentionDays90.
+  ///
+  /// In fa, this message translates to:
+  /// **'۹۰ روز'**
+  String get retentionDays90;
+
+  /// No description provided for @retentionForever.
+  ///
+  /// In fa, this message translates to:
+  /// **'برای همیشه'**
+  String get retentionForever;
 }
 
 class _AppLocalizationsDelegate

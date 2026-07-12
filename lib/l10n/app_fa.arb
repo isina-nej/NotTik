@@ -7,7 +7,7 @@
   "onboardingTitle": "به نات‌تیک خوش آمدید",
   "onboardingDesc": "برای ذخیره‌سازی آفلاین و امن نوتیفیکیشن‌ها، نیاز به دسترسی خواندن اعلانات داریم.",
   "grantPermission": "اعطای دسترسی",
-  "historyTitle": "تاریخچه اعلانات",
+  "historyTitle": "تاریخچه",
   "emptyHistory": "هیچ نوتیفیکیشنی یافت نشد.",
   "settingsTitle": "تنظیمات",
   "searchHint": "جستجو...",
@@ -20,23 +20,40 @@
   "emptyApps": "هنوز هیچ برنامه‌ای ثبت نشده است.",
   "generalSettings": "عمومی",
   "language": "زبان",
-  "theme": "پوسته (تم)",
+  "theme": "پوسته",
   "themeSystem": "سیستم",
   "dataAndStorage": "داده‌ها و حافظه",
-  "autoCleanup": "پاکسازی خودکار (Retention)",
-  "exportTitle": "خروجی گرفتن (Export)",
-  "exportDesc": "دریافت فایل JSON",
-  "backupTitle": "بکاپ و بازگردانی",
-  "backupDesc": "ذخیره دیتابیس در فایل ZIP",
+  "autoCleanup": "پاکسازی خودکار",
+  "exportTitle": "خروجی گرفتن",
+  "exportDesc": "دریافت فایل جیسون",
+  "backupTitle": "پشتیبان و بازگردانی",
+  "backupDesc": "ذخیره پایگاه داده در فایل زیپ",
   "logsTitle": "دریافت فایل‌های لاگ",
   "logsDesc": "اشتراک‌گذاری گزارش خطاهای سیستم",
   "noLogsAvailable": "هیچ لاگی ثبت نشده است.",
-  "selectLanguageTitle": "انتخاب زبان / Language",
+  "selectLanguageTitle": "انتخاب زبان",
   "persian": "فارسی",
   "english": "English",
   "light": "روشن",
   "dark": "تاریک",
   "emptyFilteredHistory": "هیچ نوتیفیکیشنی در این دسته‌بندی یافت نشد.",
   "noRevisionsFound": "هیچ تغییراتی یافت نشد.",
-  "error": "خطا"
+  "error": "خطا",
+  "senderLabel": "فرستنده",
+  "groupLabel": "گروه",
+  "historyLoadError": "خطا در دریافت اطلاعات",
+  "privacyTagline": "مبتنی بر حریم خصوصی و کاملاً آفلاین",
+  "appVersion": "نسخه {version}",
+  "@appVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "unknownApp": "ناشناس",
+  "retentionDays7": "۷ روز",
+  "retentionDays30": "۳۰ روز",
+  "retentionDays90": "۹۰ روز",
+  "retentionForever": "برای همیشه"
 }

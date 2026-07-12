@@ -5,6 +5,7 @@ import 'package:nottik/app/ui/screens/history_screen.dart';
 import 'package:nottik/app/ui/screens/detail_screen.dart';
 import 'package:nottik/app/ui/screens/apps_screen.dart';
 import 'package:nottik/app/ui/screens/settings_screen.dart';
+import 'package:nottik/app/ui/screens/shell_scaffold.dart';
 import 'package:nottik/app/data/providers/listener_provider.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 
@@ -31,7 +32,17 @@ GoRouter appRouter(Ref ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const HistoryScreen()),
+      ShellRoute(
+        builder: (context, state, child) => ShellScaffold(child: child),
+        routes: [
+          GoRoute(path: '/', builder: (context, state) => const HistoryScreen()),
+          GoRoute(path: '/apps', builder: (context, state) => const AppsScreen()),
+          GoRoute(
+            path: '/settings',
+            builder: (context, state) => const SettingsScreen(),
+          ),
+        ],
+      ),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
@@ -42,11 +53,6 @@ GoRouter appRouter(Ref ref) {
           final record = state.extra as NativeNotificationRecord;
           return DetailScreen(record: record);
         },
-      ),
-      GoRoute(path: '/apps', builder: (context, state) => const AppsScreen()),
-      GoRoute(
-        path: '/settings',
-        builder: (context, state) => const SettingsScreen(),
       ),
     ],
   );

@@ -5,8 +5,8 @@ import 'package:device_apps/device_apps.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 import 'package:nottik/app/data/providers/detail_provider.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
-import 'package:nottik/l10n/l10n.dart';
-import 'package:intl/intl.dart';
+import 'package:nottik/l10n/generated/app_localizations.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 
 class DetailScreen extends ConsumerWidget {
   final NativeNotificationRecord record;
@@ -15,9 +15,11 @@ class DetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final revisionsAsync = ref.watch(
       notificationDetailProvider(record.id ?? 0),
     );
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -28,13 +30,16 @@ class DetailScreen extends ConsumerWidget {
               FutureBuilder<Application?>(
                 future: DeviceApps.getApp(record.packageName!, true),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data is ApplicationWithIcon) {
+                  if (snapshot.hasData &&
+                      snapshot.data is ApplicationWithIcon) {
                     return Padding(
                       padding: const EdgeInsetsDirectional.only(end: 8.0),
                       child: CircleAvatar(
                         radius: 14,
                         backgroundColor: Colors.transparent,
-                        backgroundImage: MemoryImage((snapshot.data as ApplicationWithIcon).icon),
+                        backgroundImage: MemoryImage(
+                          (snapshot.data as ApplicationWithIcon).icon,
+                        ),
                       ),
                     );
                   }
@@ -43,7 +48,7 @@ class DetailScreen extends ConsumerWidget {
               ),
             Flexible(
               child: Text(
-                record.appName ?? record.packageName ?? 'Details',
+                record.appName ?? record.packageName ?? l10n.unknownApp,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -52,23 +57,37 @@ class DetailScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          // Header Card
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: GlassmorphismCard(
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
-                    child: Icon(
-                      Icons.notifications_active,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      size: 30,
-                    ),
+                  FutureBuilder<Application?>(
+                    future: record.packageName != null
+                        ? DeviceApps.getApp(record.packageName!, true)
+                        : Future.value(null),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.data is ApplicationWithIcon) {
+                        return CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: MemoryImage(
+                            (snapshot.data as ApplicationWithIcon).icon,
+                          ),
+                        );
+                      }
+                      return CircleAvatar(
+                        radius: 30,
+                        backgroundColor: scheme.primaryContainer,
+                        child: Icon(
+                          Icons.notifications_active,
+                          color: scheme.onPrimaryContainer,
+                          size: 30,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -76,23 +95,28 @@ class DetailScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          record.appName ?? record.packageName ?? 'Unknown App',
-                          style: Theme.of(context).textTheme.titleLarge
+                          record.appName ??
+                              record.packageName ??
+                              l10n.unknownApp,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         if (record.senderName != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            'Sender: ${record.senderName}',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                            '${l10n.senderLabel}: ${record.senderName}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(color: scheme.primary),
                           ),
                         ],
                         if (record.groupKey != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            'Group: ${record.groupKey}',
+                            '${l10n.groupLabel}: ${record.groupKey}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -103,10 +127,6 @@ class DetailScreen extends ConsumerWidget {
               ),
             ),
           ),
-
-          const Divider(),
-
-          // Revisions Timeline
           Expanded(
             child: revisionsAsync.when(
               data: (revisions) {
@@ -114,7 +134,7 @@ class DetailScreen extends ConsumerWidget {
                   return Center(child: Text(l10n.noRevisionsFound));
                 }
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(
+                  padding: const EdgeInsetsDirectional.symmetric(
                     horizontal: 16,
                     vertical: 8,
                   ),
@@ -136,12 +156,13 @@ class DetailScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  timeStr,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                Expanded(
+                                  child: Text(
+                                    timeStr,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 Text(
@@ -151,17 +172,22 @@ class DetailScreen extends ConsumerWidget {
                               ],
                             ),
                             const SizedBox(height: 8),
-                            if (rev.mediaPath != null && File(rev.mediaPath!).existsSync()) ...[
+                            if (rev.mediaPath != null &&
+                                File(rev.mediaPath!).existsSync()) ...[
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12.0),
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderRadius: BorderRadius.circular(12.0),
                                   child: Image.file(
                                     File(rev.mediaPath!),
                                     width: double.infinity,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                                    errorBuilder:
+                                        (context, error, stackTrace) => Icon(
+                                      Icons.broken_image,
+                                      size: 50,
+                                      color: scheme.onSurfaceVariant,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -179,26 +205,27 @@ class DetailScreen extends ConsumerWidget {
                                 padding: const EdgeInsets.only(top: 4.0),
                                 child: Text(rev.text!),
                               ),
-                            if (rev.bigText != null && rev.bigText!.isNotEmpty)
+                            if (rev.bigText != null &&
+                                rev.bigText!.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Text(
                                   rev.bigText!,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontStyle: FontStyle.italic,
+                                    color: scheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
-
-                            // Progress bar if available
-                            if (rev.progressMax != null && rev.progressMax! > 0)
+                            if (rev.progressMax != null &&
+                                rev.progressMax! > 0)
                               Padding(
                                 padding: const EdgeInsets.only(top: 12.0),
                                 child: LinearProgressIndicator(
                                   value: (rev.progressIndeterminate == true)
                                       ? null
                                       : (rev.progressValue?.toDouble() ?? 0) /
-                                            (rev.progressMax?.toDouble() ?? 1),
+                                          (rev.progressMax?.toDouble() ?? 1),
                                 ),
                               ),
                           ],
@@ -209,7 +236,8 @@ class DetailScreen extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('${l10n.error}: $err')),
+              error: (err, stack) =>
+                  Center(child: Text('${l10n.error}: $err')),
             ),
           ),
         ],

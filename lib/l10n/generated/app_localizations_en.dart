@@ -22,7 +22,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantPermission => 'Grant Permission';
 
   @override
-  String get historyTitle => 'Notification History';
+  String get historyTitle => 'History';
 
   @override
   String get emptyHistory => 'No notifications found.';
@@ -70,7 +70,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dataAndStorage => 'Data & Storage';
 
   @override
-  String get autoCleanup => 'Auto Cleanup (Retention)';
+  String get autoCleanup => 'Auto Cleanup';
 
   @override
   String get exportTitle => 'Export';
@@ -117,4 +117,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get senderLabel => 'Sender';
+
+  @override
+  String get groupLabel => 'Group';
+
+  @override
+  String get historyLoadError => 'Failed to load data';
+
+  @override
+  String get privacyTagline => 'Privacy-first and fully offline';
+
+  @override
+  String appVersion(String version) {
+    return 'Version $version';
+  }
+
+  @override
+  String get unknownApp => 'Unknown';
+
+  @override
+  String get retentionDays7 => '7 days';
+
+  @override
+  String get retentionDays30 => '30 days';
+
+  @override
+  String get retentionDays90 => '90 days';
+
+  @override
+  String get retentionForever => 'Forever';
 }
