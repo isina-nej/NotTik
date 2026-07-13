@@ -17,8 +17,8 @@ class RetentionSettingsNotifier extends Notifier<RetentionPeriod> {
     final value = prefs.getString(_key);
     if (value != null) {
       state = RetentionPeriod.values.firstWhere(
-        (e) => e.toString() == value, 
-        orElse: () => RetentionPeriod.days30
+        (e) => e.toString() == value,
+        orElse: () => RetentionPeriod.days30,
       );
     }
   }
@@ -30,6 +30,7 @@ class RetentionSettingsNotifier extends Notifier<RetentionPeriod> {
   }
 }
 
-final retentionSettingsProvider = NotifierProvider<RetentionSettingsNotifier, RetentionPeriod>(() {
-  return RetentionSettingsNotifier();
-});
+final retentionSettingsProvider =
+    NotifierProvider<RetentionSettingsNotifier, RetentionPeriod>(() {
+      return RetentionSettingsNotifier();
+    });

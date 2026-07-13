@@ -22,6 +22,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get grantPermission => 'اعطای دسترسی';
 
   @override
+  String get onboardingReturnHint =>
+      'بعد از فعال‌سازی دسترسی، به برنامه برگردید.';
+
+  @override
   String get historyTitle => 'تاریخچه';
 
   @override
@@ -137,6 +141,12 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get unknownApp => 'ناشناس';
+
+  @override
+  String get hasImageBadge => 'تصویر';
+
+  @override
+  String get notificationImage => 'تصویر اعلان';
 
   @override
   String get retentionDays7 => '۷ روز';

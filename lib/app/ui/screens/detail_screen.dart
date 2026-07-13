@@ -1,12 +1,12 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:device_apps/device_apps.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:nottik/app/bridge/pigeon.dart';
 import 'package:nottik/app/data/providers/detail_provider.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
 import 'package:nottik/l10n/generated/app_localizations.dart';
-import 'package:intl/intl.dart' hide TextDirection;
 
 class DetailScreen extends ConsumerWidget {
   final NativeNotificationRecord record;
@@ -20,228 +20,290 @@ class DetailScreen extends ConsumerWidget {
       notificationDetailProvider(record.id ?? 0),
     );
     final scheme = Theme.of(context).colorScheme;
+    final appTitle = record.appName ?? record.packageName ?? l10n.unknownApp;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (record.packageName != null)
-              FutureBuilder<Application?>(
-                future: DeviceApps.getApp(record.packageName!, true),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.data is ApplicationWithIcon) {
-                    return Padding(
-                      padding: const EdgeInsetsDirectional.only(end: 8.0),
-                      child: CircleAvatar(
-                        radius: 14,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage: MemoryImage(
-                          (snapshot.data as ApplicationWithIcon).icon,
-                        ),
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            Flexible(
-              child: Text(
-                record.appName ?? record.packageName ?? l10n.unknownApp,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GlassmorphismCard(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  FutureBuilder<Application?>(
-                    future: record.packageName != null
-                        ? DeviceApps.getApp(record.packageName!, true)
-                        : Future.value(null),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData &&
-                          snapshot.data is ApplicationWithIcon) {
-                        return CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.transparent,
-                          backgroundImage: MemoryImage(
-                            (snapshot.data as ApplicationWithIcon).icon,
-                          ),
-                        );
-                      }
-                      return CircleAvatar(
-                        radius: 30,
-                        backgroundColor: scheme.primaryContainer,
-                        child: Icon(
-                          Icons.notifications_active,
-                          color: scheme.onPrimaryContainer,
-                          size: 30,
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          record.appName ??
-                              record.packageName ??
-                              l10n.unknownApp,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        if (record.senderName != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            '${l10n.senderLabel}: ${record.senderName}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(color: scheme.primary),
-                          ),
-                        ],
-                        if (record.groupKey != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            '${l10n.groupLabel}: ${record.groupKey}',
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+      backgroundColor: Colors.transparent,
+      body: AppAmbientBackground(
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DepthAppBadge(
+                  path: record.appIconPath,
+                  letter: _firstLetter(appTitle),
+                  size: 32,
+                  accent: scheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(appTitle, overflow: TextOverflow.ellipsis),
+                ),
+              ],
             ),
           ),
-          Expanded(
-            child: revisionsAsync.when(
-              data: (revisions) {
-                if (revisions.isEmpty) {
-                  return Center(child: Text(l10n.noRevisionsFound));
-                }
-                return ListView.builder(
-                  padding: const EdgeInsetsDirectional.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  itemCount: revisions.length,
-                  itemBuilder: (context, index) {
-                    final rev = revisions[index];
-                    final date = DateTime.fromMillisecondsSinceEpoch(
-                      rev.captureTimestamp ?? 0,
-                    );
-                    final timeStr = DateFormat.Hms().format(date);
-                    final dateStr = DateFormat.yMd().format(date);
-
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0),
-                      child: GlassmorphismCard(
-                        blur: 10,
-                        padding: const EdgeInsets.all(16),
+          body: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 10),
+                child: GlassmorphismCard(
+                  blur: 10,
+                  depth: 0.75,
+                  padding: const EdgeInsetsDirectional.all(14),
+                  child: Row(
+                    children: [
+                      DepthAppBadge(
+                        path: record.appIconPath,
+                        letter: _firstLetter(appTitle),
+                        size: 52,
+                        accent: scheme.primary,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    timeStr,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  dateStr,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ],
+                            Text(
+                              appTitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w800),
                             ),
-                            const SizedBox(height: 8),
-                            if (rev.mediaPath != null &&
-                                File(rev.mediaPath!).existsSync()) ...[
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 12.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: Image.file(
-                                    File(rev.mediaPath!),
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                    errorBuilder:
-                                        (context, error, stackTrace) => Icon(
-                                      Icons.broken_image,
-                                      size: 50,
-                                      color: scheme.onSurfaceVariant,
-                                    ),
-                                  ),
-                                ),
+                            if (_clean(record.packageName).isNotEmpty) ...[
+                              const SizedBox(height: 3),
+                              Text(
+                                record.packageName!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.labelSmall
+                                    ?.copyWith(color: scheme.onSurfaceVariant),
                               ),
                             ],
-                            if (rev.title != null && rev.title!.isNotEmpty)
-                              Text(
-                                rev.title!,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
+                            if (_clean(record.senderName).isNotEmpty) ...[
+                              const SizedBox(height: 6),
+                              _MetaPill(
+                                icon: Icons.person_rounded,
+                                text:
+                                    '${l10n.senderLabel}: ${record.senderName}',
                               ),
-                            if (rev.text != null && rev.text!.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4.0),
-                                child: Text(rev.text!),
+                            ],
+                            if (_clean(record.groupKey).isNotEmpty) ...[
+                              const SizedBox(height: 6),
+                              _MetaPill(
+                                icon: Icons.layers_rounded,
+                                text: '${l10n.groupLabel}: ${record.groupKey}',
                               ),
-                            if (rev.bigText != null &&
-                                rev.bigText!.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  rev.bigText!,
-                                  style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    color: scheme.onSurfaceVariant,
-                                  ),
-                                ),
-                              ),
-                            if (rev.progressMax != null &&
-                                rev.progressMax! > 0)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 12.0),
-                                child: LinearProgressIndicator(
-                                  value: (rev.progressIndeterminate == true)
-                                      ? null
-                                      : (rev.progressValue?.toDouble() ?? 0) /
-                                          (rev.progressMax?.toDouble() ?? 1),
-                                ),
-                              ),
+                            ],
                           ],
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: revisionsAsync.when(
+                  data: (revisions) {
+                    if (revisions.isEmpty) {
+                      return Center(child: Text(l10n.noRevisionsFound));
+                    }
+                    return ListView.builder(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                        16,
+                        2,
+                        16,
+                        24,
+                      ),
+                      itemCount: revisions.length,
+                      itemBuilder: (context, index) {
+                        return _RevisionCard(
+                          revision: revisions[index],
+                          l10n: l10n,
+                        );
+                      },
                     );
                   },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) =>
-                  Center(child: Text('${l10n.error}: $err')),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (err, stack) =>
+                      Center(child: Text('${l10n.error}: $err')),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  static String _clean(String? value) => value?.trim() ?? '';
+
+  static String _firstLetter(String value) {
+    final clean = value.trim();
+    return clean.isEmpty ? '?' : clean.characters.first.toUpperCase();
+  }
+}
+
+class _MetaPill extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _MetaPill({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsetsDirectional.symmetric(
+        horizontal: 8,
+        vertical: 4,
+      ),
+      decoration: BoxDecoration(
+        color: scheme.primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: scheme.primary.withValues(alpha: 0.24)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: scheme.primary),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: scheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ],
       ),
     );
   }
+}
+
+class _RevisionCard extends StatelessWidget {
+  final NativeNotificationRevision revision;
+  final AppLocalizations l10n;
+
+  const _RevisionCard({required this.revision, required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final date = DateTime.fromMillisecondsSinceEpoch(
+      revision.captureTimestamp ?? 0,
+    );
+    final timeStr = DateFormat.Hms().format(date);
+    final dateStr = DateFormat.yMd().format(date);
+    final mediaPath = revision.mediaPath;
+    final hasMedia = mediaPath?.trim().isNotEmpty ?? false;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: GlassmorphismCard(
+        blur: 10,
+        depth: 0.7,
+        padding: const EdgeInsetsDirectional.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    timeStr,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Text(
+                  dateStr,
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            if (hasMedia) ...[
+              const SizedBox(height: 10),
+              Text(
+                l10n.notificationImage,
+                style: Theme.of(
+                  context,
+                ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.file(
+                  File(mediaPath!.trim()),
+                  width: double.infinity,
+                  cacheWidth: MediaQuery.sizeOf(context).width.ceil() * 2,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 120,
+                    alignment: Alignment.center,
+                    color: scheme.surfaceContainerHigh,
+                    child: Icon(
+                      Icons.broken_image_rounded,
+                      size: 46,
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            if (_clean(revision.title).isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                revision.title!.trim(),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+              ),
+            ],
+            if (_clean(revision.text).isNotEmpty) ...[
+              const SizedBox(height: 5),
+              Text(
+                revision.text!.trim(),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(height: 1.45),
+              ),
+            ],
+            if (_clean(revision.bigText).isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                revision.bigText!.trim(),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: scheme.onSurfaceVariant,
+                  height: 1.45,
+                ),
+              ),
+            ],
+            if (revision.progressMax != null && revision.progressMax! > 0) ...[
+              const SizedBox(height: 12),
+              LinearProgressIndicator(
+                value: (revision.progressIndeterminate == true)
+                    ? null
+                    : (revision.progressValue?.toDouble() ?? 0) /
+                          (revision.progressMax?.toDouble() ?? 1),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  static String _clean(String? value) => value?.trim() ?? '';
 }

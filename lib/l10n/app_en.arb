@@ -7,6 +7,7 @@
   "onboardingTitle": "Welcome to NotTik",
   "onboardingDesc": "To securely save notifications offline, we need Notification Access permission.",
   "grantPermission": "Grant Permission",
+  "onboardingReturnHint": "After enabling access, return to the app.",
   "historyTitle": "History",
   "emptyHistory": "No notifications found.",
   "settingsTitle": "Settings",
@@ -52,6 +53,8 @@
     }
   },
   "unknownApp": "Unknown",
+  "hasImageBadge": "Image",
+  "notificationImage": "Notification image",
   "retentionDays7": "7 days",
   "retentionDays30": "30 days",
   "retentionDays90": "90 days",

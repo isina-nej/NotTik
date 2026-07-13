@@ -212,7 +212,15 @@ data class NativeNotificationRecord (
   val isGroupSummary: Boolean? = null,
   val isRemoved: Boolean? = null,
   val removalReason: Long? = null,
-  val senderName: String? = null
+  val senderName: String? = null,
+  /** Latest revision title for list preview. */
+  val latestTitle: String? = null,
+  /** Latest revision body for list preview. */
+  val latestText: String? = null,
+  /** Absolute path to cached app icon (local file). */
+  val appIconPath: String? = null,
+  /** Absolute path to latest captured media (big picture / messaging image / large icon). */
+  val mediaPath: String? = null
 )
  {
   companion object {
@@ -236,7 +244,11 @@ data class NativeNotificationRecord (
       val isRemoved = pigeonVar_list[16] as Boolean?
       val removalReason = pigeonVar_list[17] as Long?
       val senderName = pigeonVar_list[18] as String?
-      return NativeNotificationRecord(id, notificationKey, packageName, appName, notificationId, tag, postTime, firstCapturedTime, lastUpdateTime, groupKey, channelId, priority, visibility, isOngoing, isClearable, isGroupSummary, isRemoved, removalReason, senderName)
+      val latestTitle = pigeonVar_list[19] as String?
+      val latestText = pigeonVar_list[20] as String?
+      val appIconPath = pigeonVar_list[21] as String?
+      val mediaPath = pigeonVar_list[22] as String?
+      return NativeNotificationRecord(id, notificationKey, packageName, appName, notificationId, tag, postTime, firstCapturedTime, lastUpdateTime, groupKey, channelId, priority, visibility, isOngoing, isClearable, isGroupSummary, isRemoved, removalReason, senderName, latestTitle, latestText, appIconPath, mediaPath)
     }
   }
   fun toList(): List<Any?> {
@@ -260,6 +272,10 @@ data class NativeNotificationRecord (
       isRemoved,
       removalReason,
       senderName,
+      latestTitle,
+      latestText,
+      appIconPath,
+      mediaPath,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -270,7 +286,7 @@ data class NativeNotificationRecord (
       return true
     }
     val other = other as NativeNotificationRecord
-    return PigeonPigeonUtils.deepEquals(this.id, other.id) && PigeonPigeonUtils.deepEquals(this.notificationKey, other.notificationKey) && PigeonPigeonUtils.deepEquals(this.packageName, other.packageName) && PigeonPigeonUtils.deepEquals(this.appName, other.appName) && PigeonPigeonUtils.deepEquals(this.notificationId, other.notificationId) && PigeonPigeonUtils.deepEquals(this.tag, other.tag) && PigeonPigeonUtils.deepEquals(this.postTime, other.postTime) && PigeonPigeonUtils.deepEquals(this.firstCapturedTime, other.firstCapturedTime) && PigeonPigeonUtils.deepEquals(this.lastUpdateTime, other.lastUpdateTime) && PigeonPigeonUtils.deepEquals(this.groupKey, other.groupKey) && PigeonPigeonUtils.deepEquals(this.channelId, other.channelId) && PigeonPigeonUtils.deepEquals(this.priority, other.priority) && PigeonPigeonUtils.deepEquals(this.visibility, other.visibility) && PigeonPigeonUtils.deepEquals(this.isOngoing, other.isOngoing) && PigeonPigeonUtils.deepEquals(this.isClearable, other.isClearable) && PigeonPigeonUtils.deepEquals(this.isGroupSummary, other.isGroupSummary) && PigeonPigeonUtils.deepEquals(this.isRemoved, other.isRemoved) && PigeonPigeonUtils.deepEquals(this.removalReason, other.removalReason) && PigeonPigeonUtils.deepEquals(this.senderName, other.senderName)
+    return PigeonPigeonUtils.deepEquals(this.id, other.id) && PigeonPigeonUtils.deepEquals(this.notificationKey, other.notificationKey) && PigeonPigeonUtils.deepEquals(this.packageName, other.packageName) && PigeonPigeonUtils.deepEquals(this.appName, other.appName) && PigeonPigeonUtils.deepEquals(this.notificationId, other.notificationId) && PigeonPigeonUtils.deepEquals(this.tag, other.tag) && PigeonPigeonUtils.deepEquals(this.postTime, other.postTime) && PigeonPigeonUtils.deepEquals(this.firstCapturedTime, other.firstCapturedTime) && PigeonPigeonUtils.deepEquals(this.lastUpdateTime, other.lastUpdateTime) && PigeonPigeonUtils.deepEquals(this.groupKey, other.groupKey) && PigeonPigeonUtils.deepEquals(this.channelId, other.channelId) && PigeonPigeonUtils.deepEquals(this.priority, other.priority) && PigeonPigeonUtils.deepEquals(this.visibility, other.visibility) && PigeonPigeonUtils.deepEquals(this.isOngoing, other.isOngoing) && PigeonPigeonUtils.deepEquals(this.isClearable, other.isClearable) && PigeonPigeonUtils.deepEquals(this.isGroupSummary, other.isGroupSummary) && PigeonPigeonUtils.deepEquals(this.isRemoved, other.isRemoved) && PigeonPigeonUtils.deepEquals(this.removalReason, other.removalReason) && PigeonPigeonUtils.deepEquals(this.senderName, other.senderName) && PigeonPigeonUtils.deepEquals(this.latestTitle, other.latestTitle) && PigeonPigeonUtils.deepEquals(this.latestText, other.latestText) && PigeonPigeonUtils.deepEquals(this.appIconPath, other.appIconPath) && PigeonPigeonUtils.deepEquals(this.mediaPath, other.mediaPath)
   }
 
   override fun hashCode(): Int {
@@ -294,6 +310,10 @@ data class NativeNotificationRecord (
     result = 31 * result + PigeonPigeonUtils.deepHash(this.isRemoved)
     result = 31 * result + PigeonPigeonUtils.deepHash(this.removalReason)
     result = 31 * result + PigeonPigeonUtils.deepHash(this.senderName)
+    result = 31 * result + PigeonPigeonUtils.deepHash(this.latestTitle)
+    result = 31 * result + PigeonPigeonUtils.deepHash(this.latestText)
+    result = 31 * result + PigeonPigeonUtils.deepHash(this.appIconPath)
+    result = 31 * result + PigeonPigeonUtils.deepHash(this.mediaPath)
     return result
   }
 }

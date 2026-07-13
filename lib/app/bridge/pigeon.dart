@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
 Object? _extractReplyValueOrThrow(
-    List<Object?>? replyList,
-    String channelName, {
-    required bool isNullValid,
+  List<Object?>? replyList,
+  String channelName, {
+  required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -46,8 +46,9 @@ bool _deepEquals(Object? a, Object? b) {
   }
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed
-            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
+        a.indexed.every(
+          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
+        );
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -96,7 +97,6 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
-
 class NativeNotificationRecord {
   NativeNotificationRecord({
     this.id,
@@ -118,6 +118,10 @@ class NativeNotificationRecord {
     this.isRemoved,
     this.removalReason,
     this.senderName,
+    this.latestTitle,
+    this.latestText,
+    this.appIconPath,
+    this.mediaPath,
   });
 
   int? id;
@@ -158,6 +162,18 @@ class NativeNotificationRecord {
 
   String? senderName;
 
+  /// Latest revision title for list preview.
+  String? latestTitle;
+
+  /// Latest revision body for list preview.
+  String? latestText;
+
+  /// Absolute path to cached app icon (local file).
+  String? appIconPath;
+
+  /// Absolute path to latest captured media (big picture / messaging image / large icon).
+  String? mediaPath;
+
   List<Object?> _toList() {
     return <Object?>[
       id,
@@ -179,11 +195,16 @@ class NativeNotificationRecord {
       isRemoved,
       removalReason,
       senderName,
+      latestTitle,
+      latestText,
+      appIconPath,
+      mediaPath,
     ];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static NativeNotificationRecord decode(Object result) {
     result as List<Object?>;
@@ -207,19 +228,46 @@ class NativeNotificationRecord {
       isRemoved: result[16] as bool?,
       removalReason: result[17] as int?,
       senderName: result[18] as String?,
+      latestTitle: result[19] as String?,
+      latestText: result[20] as String?,
+      appIconPath: result[21] as String?,
+      mediaPath: result[22] as String?,
     );
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
-    if (other is! NativeNotificationRecord || other.runtimeType != runtimeType) {
+    if (other is! NativeNotificationRecord ||
+        other.runtimeType != runtimeType) {
       return false;
     }
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(id, other.id) && _deepEquals(notificationKey, other.notificationKey) && _deepEquals(packageName, other.packageName) && _deepEquals(appName, other.appName) && _deepEquals(notificationId, other.notificationId) && _deepEquals(tag, other.tag) && _deepEquals(postTime, other.postTime) && _deepEquals(firstCapturedTime, other.firstCapturedTime) && _deepEquals(lastUpdateTime, other.lastUpdateTime) && _deepEquals(groupKey, other.groupKey) && _deepEquals(channelId, other.channelId) && _deepEquals(priority, other.priority) && _deepEquals(visibility, other.visibility) && _deepEquals(isOngoing, other.isOngoing) && _deepEquals(isClearable, other.isClearable) && _deepEquals(isGroupSummary, other.isGroupSummary) && _deepEquals(isRemoved, other.isRemoved) && _deepEquals(removalReason, other.removalReason) && _deepEquals(senderName, other.senderName);
+    return _deepEquals(id, other.id) &&
+        _deepEquals(notificationKey, other.notificationKey) &&
+        _deepEquals(packageName, other.packageName) &&
+        _deepEquals(appName, other.appName) &&
+        _deepEquals(notificationId, other.notificationId) &&
+        _deepEquals(tag, other.tag) &&
+        _deepEquals(postTime, other.postTime) &&
+        _deepEquals(firstCapturedTime, other.firstCapturedTime) &&
+        _deepEquals(lastUpdateTime, other.lastUpdateTime) &&
+        _deepEquals(groupKey, other.groupKey) &&
+        _deepEquals(channelId, other.channelId) &&
+        _deepEquals(priority, other.priority) &&
+        _deepEquals(visibility, other.visibility) &&
+        _deepEquals(isOngoing, other.isOngoing) &&
+        _deepEquals(isClearable, other.isClearable) &&
+        _deepEquals(isGroupSummary, other.isGroupSummary) &&
+        _deepEquals(isRemoved, other.isRemoved) &&
+        _deepEquals(removalReason, other.removalReason) &&
+        _deepEquals(senderName, other.senderName) &&
+        _deepEquals(latestTitle, other.latestTitle) &&
+        _deepEquals(latestText, other.latestText) &&
+        _deepEquals(appIconPath, other.appIconPath) &&
+        _deepEquals(mediaPath, other.mediaPath);
   }
 
   @override
@@ -301,7 +349,8 @@ class NativeNotificationRevision {
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static NativeNotificationRevision decode(Object result) {
     result as List<Object?>;
@@ -328,13 +377,29 @@ class NativeNotificationRevision {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
-    if (other is! NativeNotificationRevision || other.runtimeType != runtimeType) {
+    if (other is! NativeNotificationRevision ||
+        other.runtimeType != runtimeType) {
       return false;
     }
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(id, other.id) && _deepEquals(parentRecordId, other.parentRecordId) && _deepEquals(captureTimestamp, other.captureTimestamp) && _deepEquals(contentHash, other.contentHash) && _deepEquals(title, other.title) && _deepEquals(text, other.text) && _deepEquals(subText, other.subText) && _deepEquals(bigText, other.bigText) && _deepEquals(summaryText, other.summaryText) && _deepEquals(infoText, other.infoText) && _deepEquals(conversationTitle, other.conversationTitle) && _deepEquals(progressMax, other.progressMax) && _deepEquals(progressValue, other.progressValue) && _deepEquals(progressIndeterminate, other.progressIndeterminate) && _deepEquals(category, other.category) && _deepEquals(mediaPath, other.mediaPath);
+    return _deepEquals(id, other.id) &&
+        _deepEquals(parentRecordId, other.parentRecordId) &&
+        _deepEquals(captureTimestamp, other.captureTimestamp) &&
+        _deepEquals(contentHash, other.contentHash) &&
+        _deepEquals(title, other.title) &&
+        _deepEquals(text, other.text) &&
+        _deepEquals(subText, other.subText) &&
+        _deepEquals(bigText, other.bigText) &&
+        _deepEquals(summaryText, other.summaryText) &&
+        _deepEquals(infoText, other.infoText) &&
+        _deepEquals(conversationTitle, other.conversationTitle) &&
+        _deepEquals(progressMax, other.progressMax) &&
+        _deepEquals(progressValue, other.progressValue) &&
+        _deepEquals(progressIndeterminate, other.progressIndeterminate) &&
+        _deepEquals(category, other.category) &&
+        _deepEquals(mediaPath, other.mediaPath);
   }
 
   @override
@@ -343,24 +408,19 @@ class NativeNotificationRevision {
 }
 
 class PaginatedResult {
-  PaginatedResult({
-    this.items,
-    this.hasMore,
-  });
+  PaginatedResult({this.items, this.hasMore});
 
   List<NativeNotificationRecord?>? items;
 
   bool? hasMore;
 
   List<Object?> _toList() {
-    return <Object?>[
-      items,
-      hasMore,
-    ];
+    return <Object?>[items, hasMore];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PaginatedResult decode(Object result) {
     result as List<Object?>;
@@ -379,7 +439,8 @@ class PaginatedResult {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(items, other.items) && _deepEquals(hasMore, other.hasMore);
+    return _deepEquals(items, other.items) &&
+        _deepEquals(hasMore, other.hasMore);
   }
 
   @override
@@ -404,16 +465,12 @@ class NativeAppMetadata {
   int? retentionDays;
 
   List<Object?> _toList() {
-    return <Object?>[
-      packageName,
-      appName,
-      isLoggingEnabled,
-      retentionDays,
-    ];
+    return <Object?>[packageName, appName, isLoggingEnabled, retentionDays];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static NativeAppMetadata decode(Object result) {
     result as List<Object?>;
@@ -434,7 +491,10 @@ class NativeAppMetadata {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(packageName, other.packageName) && _deepEquals(appName, other.appName) && _deepEquals(isLoggingEnabled, other.isLoggingEnabled) && _deepEquals(retentionDays, other.retentionDays);
+    return _deepEquals(packageName, other.packageName) &&
+        _deepEquals(appName, other.appName) &&
+        _deepEquals(isLoggingEnabled, other.isLoggingEnabled) &&
+        _deepEquals(retentionDays, other.retentionDays);
   }
 
   @override
@@ -443,11 +503,7 @@ class NativeAppMetadata {
 }
 
 class ListenerDiagnostics {
-  ListenerDiagnostics({
-    this.isRunning,
-    this.hasError,
-    this.errorMessage,
-  });
+  ListenerDiagnostics({this.isRunning, this.hasError, this.errorMessage});
 
   bool? isRunning;
 
@@ -456,15 +512,12 @@ class ListenerDiagnostics {
   String? errorMessage;
 
   List<Object?> _toList() {
-    return <Object?>[
-      isRunning,
-      hasError,
-      errorMessage,
-    ];
+    return <Object?>[isRunning, hasError, errorMessage];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static ListenerDiagnostics decode(Object result) {
     result as List<Object?>;
@@ -484,14 +537,15 @@ class ListenerDiagnostics {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(isRunning, other.isRunning) && _deepEquals(hasError, other.hasError) && _deepEquals(errorMessage, other.errorMessage);
+    return _deepEquals(isRunning, other.isRunning) &&
+        _deepEquals(hasError, other.hasError) &&
+        _deepEquals(errorMessage, other.errorMessage);
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
 }
-
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -500,19 +554,19 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is NativeNotificationRecord) {
+    } else if (value is NativeNotificationRecord) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeNotificationRevision) {
+    } else if (value is NativeNotificationRevision) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    }    else if (value is PaginatedResult) {
+    } else if (value is PaginatedResult) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeAppMetadata) {
+    } else if (value is NativeAppMetadata) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    }    else if (value is ListenerDiagnostics) {
+    } else if (value is ListenerDiagnostics) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else {
@@ -543,9 +597,13 @@ class NotificationBridge {
   /// Constructor for [NotificationBridge].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  NotificationBridge({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  NotificationBridge({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -553,7 +611,8 @@ class NotificationBridge {
   final String pigeonVar_messageChannelSuffix;
 
   Future<bool> isListenerConnected() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.isListenerConnected$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.isListenerConnected$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -563,16 +622,16 @@ class NotificationBridge {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as bool;
   }
 
   Future<void> openListenerSettings() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.openListenerSettings$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.openListenerSettings$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -582,15 +641,15 @@ class NotificationBridge {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<void> requestRebind() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.requestRebind$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.requestRebind$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -600,15 +659,15 @@ class NotificationBridge {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<ListenerDiagnostics> getListenerDiagnostics() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getListenerDiagnostics$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getListenerDiagnostics$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -618,73 +677,85 @@ class NotificationBridge {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as ListenerDiagnostics;
   }
 
-  Future<PaginatedResult> getLatestHistory(int offset, int limit, String? searchQuery, String? category) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getLatestHistory$pigeonVar_messageChannelSuffix';
+  Future<PaginatedResult> getLatestHistory(
+    int offset,
+    int limit,
+    String? searchQuery,
+    String? category,
+  ) async {
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getLatestHistory$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[offset, limit, searchQuery, category]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[offset, limit, searchQuery, category],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as PaginatedResult;
   }
 
   Future<NativeNotificationRecord?> getRecordDetails(int id) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getRecordDetails$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getRecordDetails$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[id],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
     return pigeonVar_replyValue as NativeNotificationRecord?;
   }
 
   Future<List<NativeNotificationRevision?>> getRevisions(int recordId) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getRevisions$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getRevisions$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[recordId]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[recordId],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
-    return (pigeonVar_replyValue! as List<Object?>).cast<NativeNotificationRevision?>();
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
+    return (pigeonVar_replyValue! as List<Object?>)
+        .cast<NativeNotificationRevision?>();
   }
 
   Future<List<NativeAppMetadata?>> getAllAppMetadata() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getAllAppMetadata$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getAllAppMetadata$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -694,71 +765,77 @@ class NotificationBridge {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<NativeAppMetadata?>();
   }
 
   Future<NativeAppMetadata?> getAppMetadata(String packageName) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getAppMetadata$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getAppMetadata$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[packageName]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[packageName],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
     return pigeonVar_replyValue as NativeAppMetadata?;
   }
 
   Future<void> setAppLoggingStatus(String packageName, bool enabled) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.setAppLoggingStatus$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.setAppLoggingStatus$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[packageName, enabled]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[packageName, enabled],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<void> exportData(String type) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.exportData$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.exportData$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[type]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[type],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<List<String>> getNativeLogFiles() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.nottik.NotificationBridge.getNativeLogFiles$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.nottik.NotificationBridge.getNativeLogFiles$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -768,11 +845,10 @@ class NotificationBridge {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<String>();
   }
 }

@@ -7,8 +7,6 @@ import 'package:nottik/app/data/providers/listener_provider.dart';
 import 'package:nottik/app/data/providers/history_provider.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 
-
-
 void main() {
   testWidgets('NotTik App launches and shows onboarding if no connection', (
     WidgetTester tester,
@@ -31,7 +29,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.notifications_off_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.notifications_active_rounded), findsOneWidget);
   });
 
   testWidgets('NotTik App launches History if connection is present', (
@@ -57,8 +55,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(TextField), findsOneWidget); // Found the search bar
     expect(find.text('همه'), findsOneWidget); // Found the new TabBar
-    // Since history has no items, we should see the empty icon
-    expect(find.byIcon(Icons.notifications_off_outlined), findsOneWidget);
+    // Empty history uses DepthEmptyIcon sphere
+    expect(find.byIcon(Icons.notifications_off_rounded), findsOneWidget);
   });
 }
 

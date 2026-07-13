@@ -7,6 +7,7 @@
   "onboardingTitle": "به نات‌تیک خوش آمدید",
   "onboardingDesc": "برای ذخیره‌سازی آفلاین و امن نوتیفیکیشن‌ها، نیاز به دسترسی خواندن اعلانات داریم.",
   "grantPermission": "اعطای دسترسی",
+  "onboardingReturnHint": "بعد از فعال‌سازی دسترسی، به برنامه برگردید.",
   "historyTitle": "تاریخچه",
   "emptyHistory": "هیچ نوتیفیکیشنی یافت نشد.",
   "settingsTitle": "تنظیمات",
@@ -52,6 +53,8 @@
     }
   },
   "unknownApp": "ناشناس",
+  "hasImageBadge": "تصویر",
+  "notificationImage": "تصویر اعلان",
   "retentionDays7": "۷ روز",
   "retentionDays30": "۳۰ روز",
   "retentionDays90": "۹۰ روز",

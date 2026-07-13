@@ -22,6 +22,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantPermission => 'Grant Permission';
 
   @override
+  String get onboardingReturnHint =>
+      'After enabling access, return to the app.';
+
+  @override
   String get historyTitle => 'History';
 
   @override
@@ -137,6 +141,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unknownApp => 'Unknown';
+
+  @override
+  String get hasImageBadge => 'Image';
+
+  @override
+  String get notificationImage => 'Notification image';
 
   @override
   String get retentionDays7 => '7 days';

@@ -2,9 +2,18 @@ package com.nottik.app.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "notification_records")
+@Entity(
+    tableName = "notification_records",
+    indices = [
+        Index(name = "index_notification_records_notification_key", value = ["notification_key"]),
+        Index(name = "index_notification_records_history_order", value = ["is_group_summary", "last_update_time"]),
+        Index(name = "index_notification_records_category_order", value = ["is_group_summary", "custom_category", "last_update_time"]),
+        Index(name = "index_notification_records_package_retention", value = ["package_name", "last_update_time"])
+    ]
+)
 data class NotificationRecord(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,

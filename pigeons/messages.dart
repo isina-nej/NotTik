@@ -28,6 +28,18 @@ class NativeNotificationRecord {
   bool? isRemoved;
   int? removalReason;
   String? senderName;
+
+  /// Latest revision title for list preview.
+  String? latestTitle;
+
+  /// Latest revision body for list preview.
+  String? latestText;
+
+  /// Absolute path to cached app icon (local file).
+  String? appIconPath;
+
+  /// Absolute path to latest captured media (big picture / messaging image / large icon).
+  String? mediaPath;
 }
 
 class NativeNotificationRevision {

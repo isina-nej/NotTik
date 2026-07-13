@@ -1,18 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:nottik/app/data/providers/locale_provider.dart';
 import 'package:nottik/app/data/providers/theme_provider.dart';
 import 'package:nottik/app/routing/app_router.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
 import 'package:nottik/app/utils/logger.dart';
 import 'package:nottik/l10n/generated/app_localizations.dart';
-import 'package:nottik/l10n/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await AppLogger.init();
+  // Pre-warm liquid glass shaders (Impeller) when available.
+  await LiquidGlassWidgets.initialize();
 
   FlutterError.onError = (details) {
     AppLogger.error(
@@ -28,7 +30,14 @@ void main() async {
     return true;
   };
 
-  runApp(const ProviderScope(child: NotTikApp()));
+  runApp(
+    ProviderScope(
+      child: LiquidGlassWidgets.wrap(
+        adaptiveQuality: true,
+        child: const NotTikApp(),
+      ),
+    ),
+  );
 }
 
 class NotTikApp extends ConsumerWidget {
@@ -40,12 +49,10 @@ class NotTikApp extends ConsumerWidget {
     final themeMode = ref.watch(appThemeModeProvider);
     final locale = ref.watch(appLocaleProvider);
 
-    // Initialize l10n
-    initL10n(context);
-
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+      onGenerateTitle: (context) =>
+          AppLocalizations.of(context)?.appTitle ?? 'NotTik',
       themeMode: themeMode,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

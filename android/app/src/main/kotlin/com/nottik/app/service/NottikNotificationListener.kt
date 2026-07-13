@@ -36,12 +36,15 @@ class NottikNotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         if (sbn.packageName == packageName) return
+        Log.i(TAG, "posted pkg=${sbn.packageName} key=${sbn.key}")
 
         scope.launch {
             try {
                 handleNotificationPosted(sbn)
+                Log.i(TAG, "handled ok key=${sbn.key}")
             } catch (e: Exception) {
-                Log.e(TAG, "Error handling notification", e)
+                Log.e(TAG, "Error handling notification key=${sbn.key}", e)
+                lastError = e.message
             }
         }
     }
@@ -87,7 +90,31 @@ class NottikNotificationListener : NotificationListenerService() {
         if (appMetadata != null && !appMetadata.isLoggingEnabled) {
             return // Skip logging for this app
         }
-        
+
+        val appName = try {
+            packageManager.getApplicationLabel(
+                packageManager.getApplicationInfo(sbn.packageName, 0)
+            ).toString()
+        } catch (e: Exception) {
+            null
+        }
+
+        // Ensure apps list has this package.
+        if (appMetadata == null) {
+            metadataDao.insertAppMetadata(
+                com.nottik.app.models.AppMetadata(
+                    packageName = sbn.packageName,
+                    appName = appName,
+                    isLoggingEnabled = true
+                )
+            )
+        }
+
+        // Group summaries clutter the feed; keep per-message rows only.
+        val isGroupSummary =
+            notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
+        if (isGroupSummary) return
+
         // Extract fields safely
         val title = extras.getCharSequence(android.app.Notification.EXTRA_TITLE)?.toString()
         val text = extras.getCharSequence(android.app.Notification.EXTRA_TEXT)?.toString()
@@ -116,8 +143,16 @@ class NottikNotificationListener : NotificationListenerService() {
                         msgJson.put("text", textStr)
                         msgJson.put("time", msgObj.getLong("time"))
                         msgJson.put("sender", senderStr)
+                        // Keep uri/mime for debug / future UI without re-opening stream.
+                        val mime = msgObj.getString("type")
+                            ?: msgObj.getString("mimeType")
+                            ?: msgObj.getString("dataMimeType")
+                        val uriStr = msgObj.getString("uri")
+                            ?: msgObj.getParcelable<android.net.Uri>("uri")?.toString()
+                        if (mime != null) msgJson.put("mime", mime)
+                        if (uriStr != null) msgJson.put("uri", uriStr)
                         jsonArray.put(msgJson)
-                        
+
                         if (senderStr != null) {
                             lastSenderName = senderStr
                         }
@@ -128,30 +163,33 @@ class NottikNotificationListener : NotificationListenerService() {
         } catch (e: Exception) {
             Log.e(TAG, "Failed to extract messages", e)
         }
-        
-        // If it's not a MessagingStyle or doesn't have a specific sender, fallback to title
-        if (lastSenderName == null) {
-            lastSenderName = title
-        }
 
-        // Extract Images
+        // Only treat MessagingStyle sender as a person; do not use title as sender.
+
+        // Extract every image Android exposed on this notification.
         var largeIconPath: String? = null
         var bigPicturePath: String? = null
-        
+        var messagingImagePath: String? = null
+        var appIconPath: String? = null
+
         try {
-            val largeIcon = notification.getLargeIcon()
-            largeIconPath = NotificationImageExtractor.extractAndSaveIcon(this, largeIcon, "large_icon")
-            
-            val bigPicture = extras.getParcelable<android.graphics.Bitmap>(android.app.Notification.EXTRA_PICTURE)
-            bigPicturePath = NotificationImageExtractor.extractAndSaveBitmap(this, bigPicture, "big_picture")
-            
-            val appIcon = notification.smallIcon
-            // App icon is also saved if necessary.
+            val (large, big, msgImg) =
+                NotificationImageExtractor.extractNotificationMedia(this, notification, extras)
+            largeIconPath = large
+            bigPicturePath = big
+            messagingImagePath = msgImg
+            appIconPath = NotificationImageExtractor.extractAndSaveAppIcon(this, sbn.packageName)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to extract images", e)
         }
-        
-        // Semantic hashing
+
+        // Prefer real media: big picture > messaging attachment > large icon (avatar).
+        val mediaPath = bigPicturePath ?: messagingImagePath ?: largeIconPath
+        val mediaKey = NotificationImageExtractor.mediaContentKey(
+            listOf(bigPicturePath, messagingImagePath, largeIconPath),
+        )
+
+        // Semantic hashing — include media keys so image-only updates create a revision.
         val contentBuilder = StringBuilder()
         contentBuilder.append(sbn.packageName).append("|")
         contentBuilder.append(title ?: "").append("|")
@@ -159,7 +197,8 @@ class NottikNotificationListener : NotificationListenerService() {
         contentBuilder.append(bigText ?: "").append("|")
         contentBuilder.append(progressValue).append("|")
         contentBuilder.append(messagingMessagesStr ?: "").append("|")
-        
+        contentBuilder.append(mediaKey)
+
         val hash = sha256(contentBuilder.toString())
         
         // Find existing record by stable key
@@ -169,14 +208,6 @@ class NottikNotificationListener : NotificationListenerService() {
         val currentTime = System.currentTimeMillis()
         
         if (record == null) {
-            val appName = try {
-                packageManager.getApplicationLabel(
-                    packageManager.getApplicationInfo(sbn.packageName, 0)
-                ).toString()
-            } catch (e: Exception) {
-                null
-            }
-            
             record = NotificationRecord(
                 notificationKey = sbn.key,
                 packageName = sbn.packageName,
@@ -192,7 +223,7 @@ class NottikNotificationListener : NotificationListenerService() {
                 visibility = notification.visibility,
                 isOngoing = sbn.isOngoing,
                 isClearable = sbn.isClearable,
-                isGroupSummary = notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0,
+                isGroupSummary = false,
                 isRemoved = false,
                 senderName = lastSenderName
             )
@@ -218,7 +249,7 @@ class NottikNotificationListener : NotificationListenerService() {
             bigText = bigText,
             summaryText = summaryText,
             infoText = infoText,
-            textLines = null, // Will parse EXTRA_TEXT_LINES if needed
+            textLines = null,
             conversationTitle = conversationTitle,
             messagingMessages = messagingMessagesStr,
             progressMax = progressMax,
@@ -227,8 +258,8 @@ class NottikNotificationListener : NotificationListenerService() {
             category = notification.category,
             largeIconPath = largeIconPath,
             bigPicturePath = bigPicturePath,
-            appIconPath = null,
-            mediaPath = bigPicturePath ?: largeIconPath // Store the primary available media
+            appIconPath = appIconPath,
+            mediaPath = mediaPath
         )
         
         dao.insertRevision(revision)

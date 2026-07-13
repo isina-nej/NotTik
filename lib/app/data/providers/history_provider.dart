@@ -39,12 +39,10 @@ class NotificationHistory extends _$NotificationHistory {
     if (state.isLoading || state.hasError) return;
 
     final currentList = state.value ?? [];
-
-    // Preserve previous data during pagination (no flash)
-    state = const AsyncValue<List<NativeNotificationRecord>>.loading();
-
+    // Keep previous rows visible while paging (no full-screen spinner).
     try {
       final newItems = await _fetchPage(currentList.length);
+      if (newItems.isEmpty) return;
       state = AsyncData([...currentList, ...newItems]);
     } catch (e, st) {
       state = AsyncError(e, st);

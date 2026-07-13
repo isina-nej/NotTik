@@ -3,6 +3,7 @@ package com.nottik.app.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -14,13 +15,16 @@ import androidx.room.PrimaryKey
             childColumns = ["parent_record_id"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        Index(name = "index_notification_revisions_latest", value = ["parent_record_id", "capture_timestamp"])
     ]
 )
 data class NotificationRevision(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0,
     
-    @ColumnInfo(name = "parent_record_id", index = true)
+    @ColumnInfo(name = "parent_record_id")
     var parentRecordId: Long = 0,
     
     @ColumnInfo(name = "capture_timestamp")

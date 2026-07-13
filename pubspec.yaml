@@ -45,6 +45,7 @@ dependencies:
   share_plus: ^13.2.0
   shared_preferences: ^2.5.5
   device_apps: ^2.2.0
+  liquid_glass_widgets: ^0.21.3
 
 dev_dependencies:
   flutter_test:

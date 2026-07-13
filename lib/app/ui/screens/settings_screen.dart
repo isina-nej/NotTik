@@ -20,6 +20,7 @@ class SettingsScreen extends ConsumerWidget {
     final retention = ref.watch(retentionSettingsProvider);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
           l10n.settingsTitle,
@@ -27,7 +28,7 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
         children: [
           Padding(
             padding: const EdgeInsetsDirectional.only(
@@ -38,41 +39,40 @@ class SettingsScreen extends ConsumerWidget {
             child: Text(
               l10n.generalSettings.toUpperCase(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           GlassmorphismCard(
+            depth: 1.1,
             padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSettingsTile(
                   context: context,
-                  icon: Icons.language,
-                  iconColor: Colors.blue,
+                  icon: Icons.language_rounded,
+                  iconColor: const Color(0xFF3B82F6),
                   title: l10n.language,
-                  subtitle:
-                      locale.languageCode == 'fa' ? l10n.persian : l10n.english,
-                  onTap: () =>
-                      _showLanguageDialog(context, ref, locale, l10n),
+                  subtitle: locale.languageCode == 'fa'
+                      ? l10n.persian
+                      : l10n.english,
+                  onTap: () => _showLanguageDialog(context, ref, locale, l10n),
                 ),
                 Divider(
                   height: 1,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .outlineVariant
-                      .withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withValues(alpha: 0.4),
                 ),
                 _buildSettingsTile(
                   context: context,
-                  icon: Icons.dark_mode,
-                  iconColor: Colors.deepPurple,
+                  icon: Icons.dark_mode_rounded,
+                  iconColor: const Color(0xFF8B5CF6),
                   title: l10n.theme,
                   subtitle: _getThemeText(themeMode, l10n),
-                  onTap: () =>
-                      _showThemeDialog(context, ref, themeMode, l10n),
+                  onTap: () => _showThemeDialog(context, ref, themeMode, l10n),
                 ),
               ],
             ),
@@ -87,20 +87,21 @@ class SettingsScreen extends ConsumerWidget {
             child: Text(
               l10n.dataAndStorage.toUpperCase(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           GlassmorphismCard(
+            depth: 1.1,
             padding: EdgeInsets.zero,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSettingsTile(
                   context: context,
-                  icon: Icons.auto_delete,
-                  iconColor: Colors.orange,
+                  icon: Icons.auto_delete_rounded,
+                  iconColor: const Color(0xFFF59E0B),
                   title: l10n.autoCleanup,
                   subtitle: _getRetentionText(retention, l10n),
                   onTap: () =>
@@ -108,15 +109,14 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 Divider(
                   height: 1,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .outlineVariant
-                      .withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withValues(alpha: 0.4),
                 ),
                 _buildSettingsTile(
                   context: context,
-                  icon: Icons.file_download,
-                  iconColor: Colors.green,
+                  icon: Icons.download_rounded,
+                  iconColor: const Color(0xFF10B981),
                   title: l10n.exportTitle,
                   subtitle: l10n.exportDesc,
                   onTap: () {
@@ -125,15 +125,14 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 Divider(
                   height: 1,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .outlineVariant
-                      .withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withValues(alpha: 0.4),
                 ),
                 _buildSettingsTile(
                   context: context,
-                  icon: Icons.archive,
-                  iconColor: Colors.red,
+                  icon: Icons.inventory_2_rounded,
+                  iconColor: const Color(0xFFEF4444),
                   title: l10n.backupTitle,
                   subtitle: l10n.backupDesc,
                   onTap: () {
@@ -142,23 +141,21 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 Divider(
                   height: 1,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .outlineVariant
-                      .withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withValues(alpha: 0.4),
                 ),
                 _buildSettingsTile(
                   context: context,
-                  icon: Icons.bug_report,
-                  iconColor: Colors.teal,
+                  icon: Icons.bug_report_rounded,
+                  iconColor: const Color(0xFF14B8A6),
                   title: l10n.logsTitle,
                   subtitle: l10n.logsDesc,
                   onTap: () async {
                     try {
                       final files = await AppLogger.getLogFiles();
                       if (files.isNotEmpty && context.mounted) {
-                        final xFiles =
-                            files.map((f) => XFile(f.path)).toList();
+                        final xFiles = files.map((f) => XFile(f.path)).toList();
                         await SharePlus.instance.share(
                           ShareParams(files: xFiles, text: 'NotTik Debug Logs'),
                         );
@@ -181,9 +178,9 @@ class SettingsScreen extends ConsumerWidget {
               '${l10n.appVersion('1.0.0')}\n${l10n.privacyTagline}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    height: 1.5,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.5,
+              ),
             ),
           ),
         ],
@@ -204,13 +201,12 @@ class SettingsScreen extends ConsumerWidget {
         horizontal: 16.0,
         vertical: 4.0,
       ),
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: iconColor,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: Colors.white, size: 20),
+      leading: DepthIcon(
+        icon: icon,
+        color: iconColor,
+        size: 42,
+        iconSize: 20,
+        selected: true,
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
       subtitle: subtitle != null ? Text(subtitle) : null,
@@ -219,6 +215,13 @@ class SettingsScreen extends ConsumerWidget {
             ? Icons.chevron_left
             : Icons.chevron_right,
         color: Theme.of(context).colorScheme.onSurfaceVariant,
+        shadows: [
+          Shadow(
+            color: Colors.black.withValues(alpha: 0.18),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       onTap: onTap,
     );
@@ -246,32 +249,20 @@ class SettingsScreen extends ConsumerWidget {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(l10n.selectLanguageTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RadioListTile<String>(
-                title: Text(l10n.persian),
-                value: 'fa',
-                groupValue: currentLocale.languageCode,
-                onChanged: (value) {
-                  ref
-                      .read(appLocaleProvider.notifier)
-                      .setLocale(Locale(value!));
-                  Navigator.pop(dialogContext);
-                },
-              ),
-              RadioListTile<String>(
-                title: Text(l10n.english),
-                value: 'en',
-                groupValue: currentLocale.languageCode,
-                onChanged: (value) {
-                  ref
-                      .read(appLocaleProvider.notifier)
-                      .setLocale(Locale(value!));
-                  Navigator.pop(dialogContext);
-                },
-              ),
-            ],
+          content: RadioGroup<String>(
+            groupValue: currentLocale.languageCode,
+            onChanged: (value) {
+              if (value == null) return;
+              ref.read(appLocaleProvider.notifier).setLocale(Locale(value));
+              Navigator.pop(dialogContext);
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<String>(title: Text(l10n.persian), value: 'fa'),
+                RadioListTile<String>(title: Text(l10n.english), value: 'en'),
+              ],
+            ),
           ),
         );
       },
@@ -289,37 +280,30 @@ class SettingsScreen extends ConsumerWidget {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(l10n.theme),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RadioListTile<ThemeMode>(
-                title: Text(l10n.themeSystem),
-                value: ThemeMode.system,
-                groupValue: currentMode,
-                onChanged: (value) {
-                  ref.read(appThemeModeProvider.notifier).setTheme(value!);
-                  Navigator.pop(dialogContext);
-                },
-              ),
-              RadioListTile<ThemeMode>(
-                title: Text(l10n.light),
-                value: ThemeMode.light,
-                groupValue: currentMode,
-                onChanged: (value) {
-                  ref.read(appThemeModeProvider.notifier).setTheme(value!);
-                  Navigator.pop(dialogContext);
-                },
-              ),
-              RadioListTile<ThemeMode>(
-                title: Text(l10n.dark),
-                value: ThemeMode.dark,
-                groupValue: currentMode,
-                onChanged: (value) {
-                  ref.read(appThemeModeProvider.notifier).setTheme(value!);
-                  Navigator.pop(dialogContext);
-                },
-              ),
-            ],
+          content: RadioGroup<ThemeMode>(
+            groupValue: currentMode,
+            onChanged: (value) {
+              if (value == null) return;
+              ref.read(appThemeModeProvider.notifier).setTheme(value);
+              Navigator.pop(dialogContext);
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile<ThemeMode>(
+                  title: Text(l10n.themeSystem),
+                  value: ThemeMode.system,
+                ),
+                RadioListTile<ThemeMode>(
+                  title: Text(l10n.light),
+                  value: ThemeMode.light,
+                ),
+                RadioListTile<ThemeMode>(
+                  title: Text(l10n.dark),
+                  value: ThemeMode.dark,
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -350,19 +334,22 @@ class SettingsScreen extends ConsumerWidget {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(l10n.autoCleanup),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: RetentionPeriod.values.map((period) {
-              return RadioListTile<RetentionPeriod>(
-                title: Text(_getRetentionText(period, l10n)),
-                value: period,
-                groupValue: currentPeriod,
-                onChanged: (value) {
-                  ref.read(retentionSettingsProvider.notifier).set(value!);
-                  Navigator.pop(dialogContext);
-                },
-              );
-            }).toList(),
+          content: RadioGroup<RetentionPeriod>(
+            groupValue: currentPeriod,
+            onChanged: (value) {
+              if (value == null) return;
+              ref.read(retentionSettingsProvider.notifier).set(value);
+              Navigator.pop(dialogContext);
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: RetentionPeriod.values.map((period) {
+                return RadioListTile<RetentionPeriod>(
+                  title: Text(_getRetentionText(period, l10n)),
+                  value: period,
+                );
+              }).toList(),
+            ),
           ),
         );
       },

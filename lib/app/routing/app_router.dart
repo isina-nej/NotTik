@@ -35,8 +35,14 @@ GoRouter appRouter(Ref ref) {
       ShellRoute(
         builder: (context, state, child) => ShellScaffold(child: child),
         routes: [
-          GoRoute(path: '/', builder: (context, state) => const HistoryScreen()),
-          GoRoute(path: '/apps', builder: (context, state) => const AppsScreen()),
+          GoRoute(
+            path: '/',
+            builder: (context, state) => const HistoryScreen(),
+          ),
+          GoRoute(
+            path: '/apps',
+            builder: (context, state) => const AppsScreen(),
+          ),
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),

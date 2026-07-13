@@ -7,6 +7,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.nottik.app.bridge.*
 import com.nottik.app.db.AppDatabase
 import com.nottik.app.service.NottikNotificationListener
+import com.nottik.app.utils.NotificationImageExtractor
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import kotlinx.coroutines.*
@@ -88,35 +89,52 @@ class MainActivity : FlutterActivity(), NotificationBridge {
     ) {
         scope.launch {
             try {
-                val records = withContext(Dispatchers.IO) {
-                    database.notificationDao().getHistoryPaginated(offset, limit, searchQuery, category)
-                }
-                
-                val result = PaginatedResult(
-                    items = records.map {
+                val result = withContext(Dispatchers.IO) {
+                    val rows = database.notificationDao()
+                        .getHistoryPreviewPaginated(offset, limit, searchQuery, category)
+                    val items = rows.map { row ->
+                        val record = row.record
+                        val previewText = row.latestText
+                            ?: row.latestBigText
+                            ?: row.latestSummaryText
+                            ?: row.latestSubText
+                        val iconPath = row.latestAppIconPath
+                            ?: row.latestLargeIconPath
+                            ?: NotificationImageExtractor.extractAndSaveAppIcon(
+                                applicationContext,
+                                record.packageName
+                            )
                         NativeNotificationRecord(
-                            id = it.id,
-                            notificationKey = it.notificationKey,
-                            packageName = it.packageName,
-                            appName = it.appName,
-                            notificationId = it.notificationId.toLong(),
-                            tag = it.tag,
-                            postTime = it.postTime,
-                            firstCapturedTime = it.firstCapturedTime,
-                            lastUpdateTime = it.lastUpdateTime,
-                            groupKey = it.groupKey,
-                            channelId = it.channelId,
-                            priority = it.priority.toLong(),
-                            visibility = it.visibility.toLong(),
-                            isOngoing = it.isOngoing,
-                            isClearable = it.isClearable,
-                            isGroupSummary = it.isGroupSummary,
-                            isRemoved = it.isRemoved,
-                            removalReason = it.removalReason?.toLong()
+                            id = record.id,
+                            notificationKey = record.notificationKey,
+                            packageName = record.packageName,
+                            appName = record.appName,
+                            notificationId = record.notificationId.toLong(),
+                            tag = record.tag,
+                            postTime = record.postTime,
+                            firstCapturedTime = record.firstCapturedTime,
+                            lastUpdateTime = record.lastUpdateTime,
+                            groupKey = record.groupKey,
+                            channelId = record.channelId,
+                            priority = record.priority.toLong(),
+                            visibility = record.visibility.toLong(),
+                            isOngoing = record.isOngoing,
+                            isClearable = record.isClearable,
+                            isGroupSummary = record.isGroupSummary,
+                            isRemoved = record.isRemoved,
+                            removalReason = record.removalReason?.toLong(),
+                            senderName = record.senderName,
+                            latestTitle = row.latestTitle ?: record.senderName,
+                            latestText = previewText,
+                            appIconPath = iconPath,
+                            mediaPath = row.latestMediaPath
                         )
-                    },
-                    hasMore = records.size == limit.toInt()
-                )
+                    }
+                    PaginatedResult(
+                        items = items,
+                        hasMore = rows.size == limit.toInt()
+                    )
+                }
                 callback(Result.success(result))
             } catch (e: Exception) {
                 callback(Result.failure(e))
@@ -138,6 +156,10 @@ class MainActivity : FlutterActivity(), NotificationBridge {
                     callback(Result.success(null))
                     return@launch
                 }
+
+                val latest = withContext(Dispatchers.IO) {
+                    database.notificationDao().getLatestRevision(detail.id)
+                }
                 
                 callback(Result.success(NativeNotificationRecord(
                     id = detail.id,
@@ -157,7 +179,12 @@ class MainActivity : FlutterActivity(), NotificationBridge {
                     isClearable = detail.isClearable,
                     isGroupSummary = detail.isGroupSummary,
                     isRemoved = detail.isRemoved,
-                    removalReason = detail.removalReason?.toLong()
+                    removalReason = detail.removalReason?.toLong(),
+                    senderName = detail.senderName,
+                    latestTitle = latest?.title ?: detail.senderName,
+                    latestText = latest?.text ?: latest?.bigText,
+                    appIconPath = latest?.appIconPath ?: latest?.largeIconPath,
+                    mediaPath = latest?.mediaPath
                 )))
             } catch (e: Exception) {
                 callback(Result.failure(e))
@@ -204,6 +231,22 @@ class MainActivity : FlutterActivity(), NotificationBridge {
         scope.launch {
             try {
                 val metadataList = withContext(Dispatchers.IO) {
+                    // Backfill metadata from captured notifications so Apps tab is never empty
+                    // just because user never toggled logging.
+                    val packages = database.notificationDao().getDistinctPackages()
+                    for (pkg in packages) {
+                        val existing = database.appMetadataDao().getAppMetadata(pkg)
+                        if (existing == null) {
+                            val name = database.notificationDao().getAppNameForPackage(pkg)
+                            database.appMetadataDao().insertAppMetadata(
+                                com.nottik.app.models.AppMetadata(
+                                    packageName = pkg,
+                                    appName = name,
+                                    isLoggingEnabled = true
+                                )
+                            )
+                        }
+                    }
                     database.appMetadataDao().getAllAppMetadata()
                 }
                 callback(Result.success(metadataList.map { meta ->

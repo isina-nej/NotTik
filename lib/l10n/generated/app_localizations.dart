@@ -122,6 +122,12 @@ abstract class AppLocalizations {
   /// **'اعطای دسترسی'**
   String get grantPermission;
 
+  /// No description provided for @onboardingReturnHint.
+  ///
+  /// In fa, this message translates to:
+  /// **'بعد از فعال‌سازی دسترسی، به برنامه برگردید.'**
+  String get onboardingReturnHint;
+
   /// No description provided for @historyTitle.
   ///
   /// In fa, this message translates to:
@@ -349,6 +355,18 @@ abstract class AppLocalizations {
   /// In fa, this message translates to:
   /// **'ناشناس'**
   String get unknownApp;
+
+  /// No description provided for @hasImageBadge.
+  ///
+  /// In fa, this message translates to:
+  /// **'تصویر'**
+  String get hasImageBadge;
+
+  /// No description provided for @notificationImage.
+  ///
+  /// In fa, this message translates to:
+  /// **'تصویر اعلان'**
+  String get notificationImage;
 
   /// No description provided for @retentionDays7.
   ///

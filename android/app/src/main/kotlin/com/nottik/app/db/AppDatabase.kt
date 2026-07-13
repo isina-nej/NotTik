@@ -10,7 +10,7 @@ import com.nottik.app.models.NotificationRecord
 import com.nottik.app.models.NotificationRevision
 import com.nottik.app.models.AppMetadata
 
-@Database(entities = [NotificationRecord::class, NotificationRevision::class, AppMetadata::class], version = 3, exportSchema = true)
+@Database(entities = [NotificationRecord::class, NotificationRevision::class, AppMetadata::class], version = 4, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun notificationDao(): NotificationDao
@@ -27,6 +27,16 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_notification_records_notification_key ON notification_records(notification_key)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_notification_records_history_order ON notification_records(is_group_summary, last_update_time)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_notification_records_category_order ON notification_records(is_group_summary, custom_category, last_update_time)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_notification_records_package_retention ON notification_records(package_name, last_update_time)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_notification_revisions_latest ON notification_revisions(parent_record_id, capture_timestamp)")
+            }
+        }
+
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -34,7 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "nottik_database"
                 )
-                .addMigrations(MIGRATION_2_3)
+                .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                 .build()
                 INSTANCE = instance
                 instance
