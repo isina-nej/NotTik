@@ -159,4 +159,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retentionForever => 'Forever';
+
+  @override
+  String get aboutTitle => 'About NotTik';
+
+  @override
+  String get aboutSubtitle => 'Privacy, website, and source code';
+
+  @override
+  String get aboutHeroTitle => 'NotTik';
+
+  @override
+  String get aboutHeroBody =>
+      'NotTik stores notification history only on your device: no internet, no server, and no analytics.';
+
+  @override
+  String get aboutPrivacyTitle => 'Privacy';
+
+  @override
+  String get aboutPrivacyBody =>
+      'The app only keeps notifications Android exposes after Notification Access is enabled. Earlier notifications and system-redacted content are not recovered.';
+
+  @override
+  String get website => 'Website';
+
+  @override
+  String get github => 'GitHub';
+
+  @override
+  String get openLinkError => 'Could not open the link.';
 }

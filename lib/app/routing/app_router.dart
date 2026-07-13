@@ -5,6 +5,7 @@ import 'package:nottik/app/ui/screens/history_screen.dart';
 import 'package:nottik/app/ui/screens/detail_screen.dart';
 import 'package:nottik/app/ui/screens/apps_screen.dart';
 import 'package:nottik/app/ui/screens/settings_screen.dart';
+import 'package:nottik/app/ui/screens/about_screen.dart';
 import 'package:nottik/app/ui/screens/shell_scaffold.dart';
 import 'package:nottik/app/data/providers/listener_provider.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
@@ -60,6 +61,7 @@ GoRouter appRouter(Ref ref) {
           return DetailScreen(record: record);
         },
       ),
+      GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
     ],
   );
 }

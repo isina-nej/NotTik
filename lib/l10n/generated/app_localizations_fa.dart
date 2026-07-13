@@ -159,4 +159,33 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get retentionForever => 'برای همیشه';
+
+  @override
+  String get aboutTitle => 'درباره نات‌تیک';
+
+  @override
+  String get aboutSubtitle => 'حریم خصوصی، سایت و کد منبع';
+
+  @override
+  String get aboutHeroTitle => 'نات‌تیک';
+
+  @override
+  String get aboutHeroBody =>
+      'نات‌تیک تاریخچه اعلان‌ها را فقط روی دستگاه شما ذخیره می‌کند؛ بدون اینترنت، بدون سرور و بدون تحلیل‌گر.';
+
+  @override
+  String get aboutPrivacyTitle => 'حریم خصوصی';
+
+  @override
+  String get aboutPrivacyBody =>
+      'برنامه فقط اعلان‌هایی را نگه می‌دارد که اندروید بعد از فعال شدن دسترسی اعلان در اختیارش بگذارد. اعلان‌های قبلی یا موارد پنهان‌شده توسط سیستم بازیابی نمی‌شوند.';
+
+  @override
+  String get website => 'سایت';
+
+  @override
+  String get github => 'گیت‌هاب';
+
+  @override
+  String get openLinkError => 'باز کردن لینک ممکن نبود.';
 }

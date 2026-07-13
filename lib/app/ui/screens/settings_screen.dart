@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nottik/app/ui/theme/app_theme.dart';
 import 'package:nottik/app/bridge/pigeon.dart';
 import 'package:nottik/app/utils/logger.dart';
@@ -73,6 +74,20 @@ class SettingsScreen extends ConsumerWidget {
                   title: l10n.theme,
                   subtitle: _getThemeText(themeMode, l10n),
                   onTap: () => _showThemeDialog(context, ref, themeMode, l10n),
+                ),
+                Divider(
+                  height: 1,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withValues(alpha: 0.4),
+                ),
+                _buildSettingsTile(
+                  context: context,
+                  icon: Icons.info_rounded,
+                  iconColor: const Color(0xFF14B8A6),
+                  title: l10n.aboutTitle,
+                  subtitle: l10n.aboutSubtitle,
+                  onTap: () => context.push('/about'),
                 ),
               ],
             ),

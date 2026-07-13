@@ -1,0 +1,7 @@
+# Copy this file to android/key.properties and fill local secret values.
+# Never commit android/key.properties or any .jks/.keystore file.
+
+storePassword=CHANGE_ME
+keyPassword=CHANGE_ME
+keyAlias=upload
+storeFile=app/upload-keystore.jks

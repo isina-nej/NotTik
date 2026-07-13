@@ -58,5 +58,14 @@
   "retentionDays7": "7 days",
   "retentionDays30": "30 days",
   "retentionDays90": "90 days",
-  "retentionForever": "Forever"
+  "retentionForever": "Forever",
+  "aboutTitle": "About NotTik",
+  "aboutSubtitle": "Privacy, website, and source code",
+  "aboutHeroTitle": "NotTik",
+  "aboutHeroBody": "NotTik stores notification history only on your device: no internet, no server, and no analytics.",
+  "aboutPrivacyTitle": "Privacy",
+  "aboutPrivacyBody": "The app only keeps notifications Android exposes after Notification Access is enabled. Earlier notifications and system-redacted content are not recovered.",
+  "website": "Website",
+  "github": "GitHub",
+  "openLinkError": "Could not open the link."
 }

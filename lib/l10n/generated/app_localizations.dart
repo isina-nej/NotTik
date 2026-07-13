@@ -391,6 +391,60 @@ abstract class AppLocalizations {
   /// In fa, this message translates to:
   /// **'برای همیشه'**
   String get retentionForever;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'درباره نات‌تیک'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutSubtitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'حریم خصوصی، سایت و کد منبع'**
+  String get aboutSubtitle;
+
+  /// No description provided for @aboutHeroTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'نات‌تیک'**
+  String get aboutHeroTitle;
+
+  /// No description provided for @aboutHeroBody.
+  ///
+  /// In fa, this message translates to:
+  /// **'نات‌تیک تاریخچه اعلان‌ها را فقط روی دستگاه شما ذخیره می‌کند؛ بدون اینترنت، بدون سرور و بدون تحلیل‌گر.'**
+  String get aboutHeroBody;
+
+  /// No description provided for @aboutPrivacyTitle.
+  ///
+  /// In fa, this message translates to:
+  /// **'حریم خصوصی'**
+  String get aboutPrivacyTitle;
+
+  /// No description provided for @aboutPrivacyBody.
+  ///
+  /// In fa, this message translates to:
+  /// **'برنامه فقط اعلان‌هایی را نگه می‌دارد که اندروید بعد از فعال شدن دسترسی اعلان در اختیارش بگذارد. اعلان‌های قبلی یا موارد پنهان‌شده توسط سیستم بازیابی نمی‌شوند.'**
+  String get aboutPrivacyBody;
+
+  /// No description provided for @website.
+  ///
+  /// In fa, this message translates to:
+  /// **'سایت'**
+  String get website;
+
+  /// No description provided for @github.
+  ///
+  /// In fa, this message translates to:
+  /// **'گیت‌هاب'**
+  String get github;
+
+  /// No description provided for @openLinkError.
+  ///
+  /// In fa, this message translates to:
+  /// **'باز کردن لینک ممکن نبود.'**
+  String get openLinkError;
 }
 
 class _AppLocalizationsDelegate

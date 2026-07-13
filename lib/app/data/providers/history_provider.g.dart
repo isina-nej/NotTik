@@ -38,7 +38,7 @@ final class NotificationHistoryProvider
 }
 
 String _$notificationHistoryHash() =>
-    r'a6c1c9e6123bc85f3174d09d5c1ed1dede8a65c4';
+    r'42c54bde80b9f30679faf1084fcd2a840e117660';
 
 abstract class _$NotificationHistory
     extends $AsyncNotifier<List<NativeNotificationRecord>> {
